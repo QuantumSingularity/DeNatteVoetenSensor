@@ -1,0 +1,18 @@
+﻿@model SensHagen.Models.User
+
+@{
+    ViewData["Title"] = "Home Page";
+
+    string _userName = "Unknown";
+
+    if (Model != null)
+    {
+        _userName = Model.Name;
+    }
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome @Model?.Name</h1>
+    <h4 class="display-6">Je email is @Model?.Email</h4>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>

@@ -1,0 +1,23 @@
+Create the database
+
+Once you have a model, you use migrations to create a database.
+
+    Run dotnet ef migrations add InitialCreate to scaffold a migration and create the initial set of tables for the model.
+    Run dotnet ef database update to apply the new migration to the database. This command creates the database before applying migrations.
+
+The blogging.db* SQLite DB is in the project directory.
+
+----
+
+dotnet add package Microsoft.EntityFrameworkCore.Sqlite
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+
+
+dotnet ef migrations add InitialCreate --context UserContext
+dotnet ef database update --context UserContext
+
+dotnet ef migrations add InitialCreate --context SensorContext
+dotnet ef database update --context SensorContext
+
+
