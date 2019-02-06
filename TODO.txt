@@ -1,0 +1,12 @@
+ToDo/Vragen:
+
+- Sensoren aanmaken/definieren:
+  Doen wij dit of mogen de gebruikers dit doen?
+
+- Accounts aanmaken:
+  Alleen via invite?
+
+- Status sensoren:
+  Mag iedereen alle statussen zien, alleen gebruikers alle statussen of gebruikers alleen hun eigen sensor?
+
+

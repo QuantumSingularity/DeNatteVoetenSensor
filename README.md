@@ -6,7 +6,8 @@ It's an ARM device, so it has to be build here and deployed manually. <br />
 There's no runtime for the ARM, but it will be complited to an executable. Use `chmod +x SensHagen` on the Pi.
 
 **Build** <br />
-dotnet publish -c Release -r linux-arm <br />
+dotnet publish -c Release -r linux-arm
+
 **Copy to RPi** <br />
 scp -r /home/bem/Projects/SensHagen/bin/Release/netcoreapp2.2/linux-arm/publish/ dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/
 
