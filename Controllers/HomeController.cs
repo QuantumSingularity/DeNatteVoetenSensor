@@ -14,11 +14,13 @@ namespace SensHagen.Controllers
         public async Task<IActionResult> Index()
         {
             Models.User user = default(Models.User);
+            Models.Sensor sensor = default(Models.Sensor);
 
             using (Models.DataBaseContext context = new Models.DataBaseContext())
             {
                 user = context.Users
                 .Include(q => q.LogItems)
+                .Include(q => q.Sensors)
                 .FirstOrDefault(q => q.Name == "Bas")
                 ;
 
@@ -26,16 +28,32 @@ namespace SensHagen.Controllers
                 {
                     user = new Models.User();
                     user.Name = "Bas";
-                    user.Password = "none";
                     user.Email = "bas@nattevoetensensor.nl";
                     context.Users.Add(user);
+                    await context.SaveChangesAsync();   // to retrieve the UserId
+                    user.SetPassword("none");
                     await context.SaveChangesAsync();
+
+                    sensor = new Models.Sensor();
+                    sensor.Name = "Bas01";
+                    sensor.Location = "Unknown";
+                    await context.SaveChangesAsync();
+
+                    user.Sensors.Add(sensor);
+                    await context.SaveChangesAsync();
+
                 }
 
-                Models.UserLogItem logItem = new Models.UserLogItem();
-                logItem.LogItemType = "Index";
-                user.LogItems.Add(logItem);
+                Models.UserLogItem userLogItem = new Models.UserLogItem();
+                userLogItem.LogItemType = "Index";
+                user.LogItems.Add(userLogItem);
                 await context.SaveChangesAsync();
+
+                Models.SensorLogItem sensorLogItem = new Models.SensorLogItem();
+                sensorLogItem.LogType = SensorLogItemType.Heartbeat;
+                user.Sensors[0].LogItems.Add(sensorLogItem);
+                await context.SaveChangesAsync();
+
             }
 
             return View(user);
