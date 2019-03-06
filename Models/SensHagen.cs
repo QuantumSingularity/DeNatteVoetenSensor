@@ -88,6 +88,7 @@ namespace SensHagen.Models
         {
             this.CreatedDate = DateTime.Now;
             this.LastModifiedDate = DateTime.Now;
+            this.UniqueIdentifier = Guid.NewGuid().ToString();
 
             LogItems = new List<UserLogItem>();
             Sensors = new List<Sensor>();
@@ -95,6 +96,8 @@ namespace SensHagen.Models
         }
 
         public int UserId { get; set; }
+        public string UniqueIdentifier {get;set;}
+
         public string Name { get; set; }
 
 

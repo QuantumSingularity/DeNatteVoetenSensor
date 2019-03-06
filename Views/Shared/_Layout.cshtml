@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SensHagen</title>
+    <title>SensHagen - De Natte Voeten Sensor</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -35,12 +35,12 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    @await Html.PartialAsync("_LoginPartial")
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
-        <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -48,7 +48,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2019 - SensHagen - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2019 - SensHagen - De NatteVoeten Sensor
         </div>
     </footer>
 

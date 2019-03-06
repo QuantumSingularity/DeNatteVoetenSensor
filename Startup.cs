@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 /*
     https://blog.agile9.net/2018/08/21/create-net-core-application-and-deploy-it-to-raspberry-pi-arm-device-linux/
@@ -35,8 +36,16 @@ namespace SensHagen
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            #region CookieAuthentication
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //.AddCookie(options => { options.LoginPath = "/Account/Login/"; });  // Niet meer nodig?
+            .AddCookie();
+            #endregion
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +65,10 @@ namespace SensHagen
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            #region CookieAuthentication
+            app.UseAuthentication();
+            #endregion
 
             app.UseMvc(routes =>
             {

@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SensHagen.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SensHagen.Controllers
 {
+ 	
     public class HomeController : Controller
     {
         public async Task<IActionResult> Index()
@@ -59,6 +61,7 @@ namespace SensHagen.Controllers
             return View(user);
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();

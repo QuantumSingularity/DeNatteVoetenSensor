@@ -5,8 +5,20 @@ ToDo/Vragen:
 
 - Accounts aanmaken:
   Alleen via invite?
+  --> Via code op de doos
 
 - Status sensoren:
   Mag iedereen alle statussen zien, alleen gebruikers alle statussen of gebruikers alleen hun eigen sensor?
 
+
+
+
+
+
+
+
+# Create new project ( https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new?tabs=netcore21 )
+dotnet new mvc --auth None
+
+https://github.com/aspnet/Docs/blob/master/aspnetcore/security/authentication/cookie/samples/2.x/CookieSample/
 
