@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SensHagen.Controllers
 {
@@ -109,7 +110,7 @@ namespace SensHagen.Controllers
             return true;
         }
 
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
@@ -122,7 +123,7 @@ namespace SensHagen.Controllers
             return Redirect("/");
         }
 
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Manage()
         {

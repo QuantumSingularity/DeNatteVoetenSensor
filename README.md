@@ -10,6 +10,7 @@ dotnet publish -c Release -r linux-arm
 
 **Copy to RPi** <br />
 scp -r /home/bem/Projects/SensHagen/bin/Release/netcoreapp2.2/linux-arm/publish/ dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/
+scp -r /home/bem/Projects/SensHagen/Data/ dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/
 
 # Initialize or update schema on Sqlite DataBase
 **Create database:** *to scaffold a migration and create the initial set of tables for the model.* <br /> 

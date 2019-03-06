@@ -58,11 +58,32 @@ namespace SensHagen.Controllers
 
             }
 
+
+            string remoteIp = "";
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            {
+                remoteIp = Request.Headers["X-Forwarded-For"];
+            }
+
+            if (string.IsNullOrWhiteSpace(remoteIp))
+            {
+                remoteIp = HttpContext.Connection.RemoteIpAddress.ToString();
+            }
+
+
+            user = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                user = new Models.User();
+                user.Name = User.Identity.Name;
+                user.IpAddress = remoteIp;
+            }
+
             return View(user);
         }
 
         [Authorize]
-        public IActionResult Privacy()
+        public IActionResult Sensors()
         {
             return View();
         }

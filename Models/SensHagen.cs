@@ -100,7 +100,10 @@ namespace SensHagen.Models
 
         public string Name { get; set; }
 
+        [NotMapped]
+        public string IpAddress {get; set; }
 
+        
         [Column]
         public string Password { get; private set; }
 
