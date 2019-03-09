@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 /*
     https://blog.agile9.net/2018/08/21/create-net-core-application-and-deploy-it-to-raspberry-pi-arm-device-linux/
@@ -45,6 +46,8 @@ namespace SensHagen
             #endregion
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddDbContext<SensHagen.Models.DataBaseContext>(options => options.UseSqlite(Configuration["Data:SensHagenDb:DataSource"]));
+
 
         }
 

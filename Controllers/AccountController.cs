@@ -157,6 +157,40 @@ namespace SensHagen.Controllers
             return Redirect("/Account/Login");
         }
 
+
+/*
+
+        // GetIp when someone had a failed login.
+        // When there are many failed logins from 1 IP, put the IP into the IpTables BlackList.
+
+            #region GetIp
+
+            var headers = Request.Headers;
+
+            string result = "";
+            foreach (var header in headers)
+            {
+                result += $"{header.Key} == {header.Value}\n";
+            }
+
+            string remoteIp = "";
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            {
+                remoteIp = Request.Headers["X-Forwarded-For"];
+            }
+
+            if (string.IsNullOrWhiteSpace(remoteIp))
+            {
+                remoteIp = HttpContext.Connection.RemoteIpAddress.ToString();
+            }
+
+            result += $"RemoteIp == {remoteIp}\n";
+
+            #endregion
+
+
+ */
+
     }
 
 }

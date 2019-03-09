@@ -1,19 +1,34 @@
-﻿@model SensHagen.Models.User
+﻿@model SensHagen.Controllers.ghome
 
 @{
     ViewData["Title"] = "Home Page";
 
-    string _userName = "Unknown";
 
-    if (Model != null)
-    {
-        _userName = Model.Name;
-    }
+
 }
 
 <img src="images/boots.png" />
 
 <div class="text-center">
-    <h1 class="display-4">Welcome @Model?.Name</h1>
-    <h3 class="display-4">You're connecting from @Model?.IpAddress</h3>
+    <h1 class="display-4">Users</h1>
+    <ul>
+    @foreach (var item in Model.Users)
+    {
+        <li>@item.EmailAddress</li>
+    }
+    </ul>
+    <h1 class="display-4">Sensors</h1>
+    <ul>
+    @foreach (var item in Model.Sensors)
+    {
+        <li>@item.MacAddress</li>
+        <ul>
+        @foreach (var item2 in item.LogItems)
+        {
+            <li>@item2.TimeStamp @item2.LogType</li>
+        }
+        </ul>
+
+    }
+    </ul>
 </div>

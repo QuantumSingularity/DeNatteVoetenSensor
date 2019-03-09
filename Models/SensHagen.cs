@@ -11,6 +11,12 @@ namespace SensHagen.Models
     public class DataBaseContext : DbContext
     {
 
+
+        public DataBaseContext(DbContextOptions<DataBaseContext> options) : base(options)
+        {
+        }
+
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<UserLogItem> UserLogItems { get; set; }
@@ -21,10 +27,12 @@ namespace SensHagen.Models
         public DbSet<SensorLogItem> SensorLogItems { get; set; }
                 
 
+        /* 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=Data/SensHagen.db");
         }
+        */
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +41,10 @@ namespace SensHagen.Models
                 .WithMany(b => b.LogItems)
                 .HasForeignKey(p => p.UserId)
                 .HasConstraintName("ForeignKey_UserLogItem_User");
+
+            modelBuilder.Entity<Sensor>()
+                .HasAlternateKey(c => c.MacAddress)
+                .HasName("AlternateKey_MacAddress");                
 
         }
 
@@ -54,6 +66,10 @@ namespace SensHagen.Models
         }
 
         public int SensorId { get; set; }
+
+        // Unique / AlternateKey
+        public string MacAddress { get; set; }
+
         public string Name { get; set; }
         public string Location { get; set; }
 
@@ -103,11 +119,11 @@ namespace SensHagen.Models
         [NotMapped]
         public string IpAddress {get; set; }
 
-        
+
         [Column]
         public string Password { get; private set; }
 
-        public string Email { get; set; }
+        public string EmailAddress { get; set; }
 
         public List<UserLogItem> LogItems { get; set; }
 

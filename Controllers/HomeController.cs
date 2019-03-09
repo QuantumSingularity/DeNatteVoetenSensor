@@ -11,53 +11,48 @@ using Microsoft.AspNetCore.Authorization;
 namespace SensHagen.Controllers
 {
  	
+    public class ghome
+    {
+        public List<Models.User> Users {get; set; }
+        public List<Models.Sensor> Sensors {get; set; }
+    }
+
     public class HomeController : Controller
     {
+
+        private readonly SensHagen.Models.DataBaseContext _context;
+
+        public HomeController (SensHagen.Models.DataBaseContext context)
+        {
+            _context = context;
+        }
+
         public async Task<IActionResult> Index()
         {
             Models.User user = default(Models.User);
-            Models.Sensor sensor = default(Models.Sensor);
 
-            using (Models.DataBaseContext context = new Models.DataBaseContext())
+            user = _context.Users
+            .Include(q => q.LogItems)
+            .Include(q => q.Sensors)
+            .FirstOrDefault(q => q.Name == "Bas")
+            ;
+
+            if (user == null)
             {
-                user = context.Users
-                .Include(q => q.LogItems)
-                .Include(q => q.Sensors)
-                .FirstOrDefault(q => q.Name == "Bas")
-                ;
-
-                if (user == null)
-                {
-                    user = new Models.User();
-                    user.Name = "Bas";
-                    user.Email = "bas@nattevoetensensor.nl";
-                    context.Users.Add(user);
-                    await context.SaveChangesAsync();   // to retrieve the UserId
-                    user.SetPassword("none");
-                    await context.SaveChangesAsync();
-
-                    sensor = new Models.Sensor();
-                    sensor.Name = "Bas01";
-                    sensor.Location = "Unknown";
-                    await context.SaveChangesAsync();
-
-                    user.Sensors.Add(sensor);
-                    await context.SaveChangesAsync();
-
-                }
-
-                Models.UserLogItem userLogItem = new Models.UserLogItem();
-                userLogItem.LogItemType = "Index";
-                user.LogItems.Add(userLogItem);
-                await context.SaveChangesAsync();
-
-                Models.SensorLogItem sensorLogItem = new Models.SensorLogItem();
-                sensorLogItem.LogType = SensorLogItemType.Heartbeat;
-                user.Sensors[0].LogItems.Add(sensorLogItem);
-                await context.SaveChangesAsync();
+                user = new Models.User();
+                user.Name = "Bas";
+                user.EmailAddress = "bas@nattevoetensensor.nl";
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();   // to retrieve the UserId
+                user.SetPassword("none");
+                await _context.SaveChangesAsync();
 
             }
 
+            Models.UserLogItem userLogItem = new Models.UserLogItem();
+            userLogItem.LogItemType = "Index";
+            user.LogItems.Add(userLogItem);
+            await _context.SaveChangesAsync();
 
             string remoteIp = "";
             if (Request.Headers.ContainsKey("X-Forwarded-For"))
@@ -71,15 +66,19 @@ namespace SensHagen.Controllers
             }
 
 
-            user = null;
+            user = new Models.User();
+            user.IpAddress = remoteIp;
             if (User.Identity.IsAuthenticated)
             {
-                user = new Models.User();
                 user.Name = User.Identity.Name;
-                user.IpAddress = remoteIp;
             }
 
-            return View(user);
+
+            ghome myghome = new ghome();
+            myghome.Users = await _context.Users.ToListAsync();
+            myghome.Sensors = await _context.Sensors.Include(s => s.LogItems).ToListAsync();
+
+            return View(myghome);
         }
 
         [Authorize]
