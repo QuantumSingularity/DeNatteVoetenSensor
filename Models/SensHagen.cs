@@ -95,6 +95,8 @@ namespace SensHagen.Models
 
         public DateTime TimeStamp { get; set; }
 
+        public double? BatteryVoltage { get; set; }
+
         public Sensor Sensor { get; set; }
     }
 

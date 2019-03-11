@@ -25,7 +25,7 @@
         <ul>
         @foreach (var item2 in item.LogItems)
         {
-            <li>@item2.TimeStamp @item2.LogType</li>
+            <li>@item2.TimeStamp - @item2.LogType - @item2.BatteryVoltage?.ToString("F2")</li>
         }
         </ul>
 

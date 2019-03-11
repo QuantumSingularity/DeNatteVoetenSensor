@@ -14,7 +14,21 @@ using Newtonsoft.Json;
 
 namespace SensHagen.Controllers
 {
- 	
+ 	/*
+        http://rpi3a.bem.dmz:8443/api/Sensor/Register?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22}
+        http://rpi3a.bem.dmz:8443/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%222C%22BatteryVoltage%22%3A%223.67%22}
+
+        http://api.nattevoetensensor.nl:16384/api/Sensor/Register?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22}
+        http://api.nattevoetensensor.nl:16384/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.2367}
+        http://api.nattevoetensensor.nl:16384/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22}
+
+        http://localhost:8080/api/Sensor/Register?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22}
+        http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.67}
+        http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22}
+    */
+
+
+
     [Route("api/[controller]")]
     public class SensorController : Controller
     {
@@ -171,6 +185,11 @@ namespace SensHagen.Controllers
                         SensorLogItem sensorLogItem = new SensorLogItem();
                         sensorLogItem.LogType = eventData.LogItemType;
 
+                        if (eventData?.BatteryVoltage > 0.0)
+                        {
+                            sensorLogItem.BatteryVoltage = eventData.BatteryVoltage;
+                        }
+
                         sensor.LogItems.Add(sensorLogItem);
 
                         await _context.SaveChangesAsync();
@@ -271,6 +290,7 @@ namespace SensHagen.Controllers
     {
         public string MacAddress {get;set;}
         public string EventType {get;set;}   // HeartBeat, Help, AllGood
+        public double? BatteryVoltage {get;set;}
 
         public Models.SensorLogItemType LogItemType {get; private set;}
 
