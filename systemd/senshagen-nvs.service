@@ -1,0 +1,16 @@
+[Unit]
+Description=SensHagen - De NatteVoeten Sensor
+After=network.target
+
+[Service]
+User=dotnet
+Group=dotnet
+WorkingDirectory=/home/dotnet/SensHagen
+PIDFile=/home/dotnet/senshagen-nvs.lock
+ExecStart=/home/dotnet/SensHagen/SensHagen-NVS
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
