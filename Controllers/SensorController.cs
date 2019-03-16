@@ -105,7 +105,22 @@ namespace SensHagen.Controllers
 
                         isOk = true;
                     }
-                    else
+
+                    if (!isOk && sensor != null && user != null)
+                    {
+
+                        sensor.Name = registerData.SensorName;
+                        sensor.ReRegisterDate = DateTime.Now;
+
+                        // What to do if the user is changed ?
+                        //user.Sensors.Add(sensor);
+
+                        await _context.SaveChangesAsync();
+
+                        isOk = true;
+                    }
+
+                    if (!isOk)
                     {
                         // Log error
                         // Log Error to database.
@@ -246,6 +261,8 @@ namespace SensHagen.Controllers
             {
                 // Via RegEx:   ^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$
 
+                MacAddress = MacAddress.ToUpper();
+
                 Regex regex = new Regex(@"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
                 Match match = regex.Match(MacAddress);
                 if (!match.Success)
@@ -304,6 +321,9 @@ namespace SensHagen.Controllers
 
             if (!String.IsNullOrWhiteSpace(MacAddress))
             {
+
+                MacAddress = MacAddress.ToUpper();
+
                 // Via RegEx:   ^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$
 
                 Regex regex = new Regex(@"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");

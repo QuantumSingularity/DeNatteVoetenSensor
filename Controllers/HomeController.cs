@@ -31,28 +31,69 @@ namespace SensHagen.Controllers
         {
             Models.User user = default(Models.User);
 
-            user = _context.Users
-            .Include(q => q.LogItems)
-            .Include(q => q.Sensors)
-            .FirstOrDefault(q => q.Name == "Bas")
-            ;
 
-            if (user == null)
+            if (_context.Users.Count() == 0)
             {
-                user = new Models.User();
-                user.Name = "Bas";
-                user.EmailAddress = "bas@nattevoetensensor.nl";
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();   // to retrieve the UserId
+
+                /*
+                user = _context.Users
+                .Include(q => q.LogItems)
+                .Include(q => q.Sensors)
+                .FirstOrDefault(q => q.Name == "Bas")
+                ;
+                 */
+
+                user = new Models.User()
+                {
+                    Name = "Bas",
+                    EmailAddress = "bas@nattevoetensensor.nl"
+                };
                 user.SetPassword("none");
+                _context.Users.Add(user);
+
+                user = new Models.User()
+                {
+                    Name = "Anton",
+                    EmailAddress = "anton@nattevoetensensor.nl"
+                };
+                user.SetPassword("none");
+                _context.Users.Add(user);
+
+                user = new Models.User()
+                {
+                    Name = "Sander",
+                    EmailAddress = "sander@nattevoetensensor.nl"
+                };
+                user.SetPassword("none");
+                _context.Users.Add(user);
+
+                user = new Models.User()
+                {
+                    Name = "Jan",
+                    EmailAddress = "jan@nattevoetensensor.nl"
+                };
+                user.SetPassword("none");
+                _context.Users.Add(user);
+
+                user = new Models.User()
+                {
+                    Name = "Ben",
+                    EmailAddress = "ben@nattevoetensensor.nl"
+                };
+                user.SetPassword("none");
+                _context.Users.Add(user);
+
+                user = new Models.User()
+                {
+                    Name = "Ryan",
+                    EmailAddress = "ryan@nattevoetensensor.nl"
+                };
+                user.SetPassword("none");
+                _context.Users.Add(user);
+
                 await _context.SaveChangesAsync();
 
             }
-
-            Models.UserLogItem userLogItem = new Models.UserLogItem();
-            userLogItem.LogItemType = "Index";
-            user.LogItems.Add(userLogItem);
-            await _context.SaveChangesAsync();
 
             string remoteIp = "";
             if (Request.Headers.ContainsKey("X-Forwarded-For"))
@@ -65,6 +106,12 @@ namespace SensHagen.Controllers
                 remoteIp = HttpContext.Connection.RemoteIpAddress.ToString();
             }
 
+            /*
+                Models.UserLogItem userLogItem = new Models.UserLogItem();
+                userLogItem.LogItemType = "Index";
+                user.LogItems.Add(userLogItem);
+                await _context.SaveChangesAsync();
+            */
 
             user = new Models.User();
             user.IpAddress = remoteIp;

@@ -7,21 +7,18 @@
 
 }
 
-<img src="images/boots.png" />
+<img src="images/boots.png" style="float: left; clear: left;" />
 
 <div class="text-center">
-    <h1 class="display-4">Users</h1>
-    <ul>
+    <h2 class="display-4">Users</h2>
     @foreach (var item in Model.Users)
     {
-        <li>@item.EmailAddress</li>
+        @item.EmailAddress<br />
     }
-    </ul>
-    <h1 class="display-4">Sensors</h1>
-    <ul>
+    <h2 class="display-4">Sensors</h2>
     @foreach (var item in Model.Sensors)
     {
-        <li>@item.MacAddress</li>
+        <h4>@item.MacAddress - @item.User.Name `@item.Name`<br />(@item.RegisterDate.ToString("dd-MM-yyyy HH:mm:ss")) (@item.ReRegisterDate?.ToString("dd-MM-yyyy HH:mm:ss"))</h4>
         <ul>
         @foreach (var item2 in item.LogItems)
         {
@@ -30,5 +27,5 @@
         </ul>
 
     }
-    </ul>
+    
 </div>

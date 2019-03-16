@@ -63,6 +63,7 @@ namespace SensHagen.Models
         public Sensor()
         {
             LogItems = new List<SensorLogItem>();
+            RegisterDate = DateTime.Now;
         }
 
         public int SensorId { get; set; }
@@ -73,6 +74,10 @@ namespace SensHagen.Models
         public string Name { get; set; }
         public string Location { get; set; }
 
+        public DateTime RegisterDate {get; set; }
+        public DateTime? ReRegisterDate {get; set; }
+
+        public User User {get; set;}
 
         public List<SensorLogItem> LogItems { get; set; }
 
