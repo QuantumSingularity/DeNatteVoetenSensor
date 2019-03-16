@@ -122,8 +122,8 @@ namespace SensHagen.Controllers
 
 
             ghome myghome = new ghome();
-            myghome.Users = await _context.Users.ToListAsync();
-            myghome.Sensors = await _context.Sensors.Include(s => s.LogItems).ToListAsync();
+            myghome.Users = await _context.Users.OrderBy(q => q.Name).ToListAsync();
+            myghome.Sensors = await _context.Sensors.Include(s => s.LogItems).OrderBy(q => q.RegisterDate).ToListAsync();
 
             return View(myghome);
         }
