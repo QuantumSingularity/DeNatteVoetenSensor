@@ -51,88 +51,71 @@ namespace SensHagen.Controllers
             // return ok/nok
 
             bool isOk = false;
-            RegisterData registerData = default(RegisterData);
+            string errorMessage = "";
+            RegisterData registerData = RegisterData.GetInstance(data);
 
-            if (!String.IsNullOrWhiteSpace(data))
-            {
-                data = data.Trim();
-                if ( data.Length > 10)
-                {
-                    try
-                    {
-                        registerData = JsonConvert.DeserializeObject<RegisterData>(data);
-                    }
-                    catch (Exception exception)
-                    {
-                        int iex = -1;  //for debug breakpoint
-                    }
-
-                    int i = -1;  //for debug breakpoint
-
-                }
-            }
-
-            if (registerData != null)
+            if (registerData.IsValid)
             {
 
-                string result = registerData.AreAllValuesGood();
+                // all ok? 
+                //   save to database
 
-                if (result == "OK")
+                Models.User user = default(Models.User);
+                Models.Sensor sensor = default(Models.Sensor);
+
+                sensor = _context.Sensors
+                    .FirstOrDefault(q => q.MacAddress == registerData.MacAddress)
+                ;
+
+                user = _context.Users
+                    .FirstOrDefault(q => q.EmailAddress == registerData.EmailAddress)
+                ;
+
+                if (sensor == null && user != null)
                 {
-                    // all ok? 
-                    //   save to database
+                    sensor = new Sensor();
+                    sensor.MacAddress = registerData.MacAddress;
+                    sensor.Name = registerData.SensorName;
 
-                    Models.User user = default(Models.User);
-                    Models.Sensor sensor = default(Models.Sensor);
+                    user.Sensors.Add(sensor);
 
-                    sensor = _context.Sensors
-                        .FirstOrDefault(q => q.MacAddress == registerData.MacAddress)
-                    ;
+                    await _context.SaveChangesAsync();
 
-                    user = _context.Users
-                        .FirstOrDefault(q => q.EmailAddress == registerData.EmailAddress)
-                    ;
-
-                    if (sensor == null && user != null)
-                    {
-                        sensor = new Sensor();
-                        sensor.MacAddress = registerData.MacAddress;
-                        sensor.Name = registerData.SensorName;
-
-                        user.Sensors.Add(sensor);
-
-                        await _context.SaveChangesAsync();
-
-                        isOk = true;
-                    }
-
-                    if (!isOk && sensor != null && user != null)
-                    {
-
-                        sensor.Name = registerData.SensorName;
-                        sensor.ReRegisterDate = DateTime.Now;
-
-                        // What to do if the user is changed ?
-                        //user.Sensors.Add(sensor);
-
-                        await _context.SaveChangesAsync();
-
-                        isOk = true;
-                    }
-
-                    if (!isOk)
-                    {
-                        // Log error
-                        // Log Error to database.
-                    }
-                    
+                    isOk = true;
                 }
-                else
+
+                if (!isOk && sensor != null && user != null)
                 {
+
+                    sensor.Name = registerData.SensorName;
+                    sensor.ReRegisterDate = DateTime.Now;
+
+                    // What to do if the user is changed ?
+                    //user.Sensors.Add(sensor);
+
+                    await _context.SaveChangesAsync();
+
+                    isOk = true;
+                }
+
+                if (!isOk)
+                {
+
+                    if (user == null)
+                    {
+                        errorMessage = "Invalid User. This EmailAddress is not registered.";
+                    }
+
                     // Log error
                     // Log Error to database.
                 }
-
+                    
+            }
+            else
+            {
+                errorMessage = registerData.ErrorMessage;
+                // Log error
+                // Log Error to database.
             }
 
 
@@ -142,7 +125,7 @@ namespace SensHagen.Controllers
             }
             else
             {
-                return BadRequest();
+                return StatusCode(400, errorMessage);
             }
             
         }
@@ -156,77 +139,54 @@ namespace SensHagen.Controllers
             // return ok/nok
 
             bool isOk = false;
-            EventData eventData = default(EventData);
+            string errorMessage = "";
+            EventData eventData = EventData.GetInstance(data);
 
-            if (!String.IsNullOrWhiteSpace(data))
-            {
-                data = data.Trim();
-                if ( data.Length > 10)
-                {
-                    try
-                    {
-                        eventData = JsonConvert.DeserializeObject<EventData>(data);
-                    }
-                    catch (Exception exception)
-                    {
-                        int iex = -1;  //for debug breakpoint
-                    }
-
-                    int i = -1;  //for debug breakpoint
-
-                }
-            }
-
-            if (eventData != null)
+            if (eventData.IsValid)
             {
                 // check input
 
-               string result = eventData.AreAllValuesGood();
+                // all ok? 
+                //   save to database
 
-                if (result == "OK")
+                Models.Sensor sensor = default(Models.Sensor);
+
+                sensor = _context.Sensors
+                    .FirstOrDefault(q => q.MacAddress == eventData.MacAddress)
+                ;
+
+                if (sensor != null)
                 {
-                    // all ok? 
-                    //   save to database
 
-                    Models.Sensor sensor = default(Models.Sensor);
+                    SensorLogItem sensorLogItem = new SensorLogItem();
+                    sensorLogItem.LogType = eventData.LogItemType;
 
-                    sensor = _context.Sensors
-                        .FirstOrDefault(q => q.MacAddress == eventData.MacAddress)
-                    ;
-
-                    if (sensor != null)
+                    if (eventData?.BatteryVoltage > 0.0)
                     {
-
-                        SensorLogItem sensorLogItem = new SensorLogItem();
-                        sensorLogItem.LogType = eventData.LogItemType;
-
-                        if (eventData?.BatteryVoltage > 0.0)
-                        {
-                            sensorLogItem.BatteryVoltage = eventData.BatteryVoltage;
-                        }
-
-                        sensor.LogItems.Add(sensorLogItem);
-
-                        await _context.SaveChangesAsync();
-
-                        isOk = true;
+                        sensorLogItem.BatteryVoltage = eventData.BatteryVoltage;
                     }
-                    else
-                    {
-                        // Log error
-                        // Log Error to database.
-                    }
-                    
+
+                    sensor.LogItems.Add(sensorLogItem);
+
+                    await _context.SaveChangesAsync();
+
+                    isOk = true;
                 }
                 else
                 {
+                    errorMessage = "Invalid Sensor. This MacAddress is not registered.";
                     // Log error
                     // Log Error to database.
                 }
-
+                
 
             }
-
+            else
+            {
+                errorMessage = eventData.ErrorMessage;
+                // Log error
+                // Log Error to database.
+            }
 
 
             if (isOk)
@@ -235,7 +195,7 @@ namespace SensHagen.Controllers
             }
             else
             {
-                return BadRequest();
+                return StatusCode(400, errorMessage);
             }
 
         }
@@ -244,18 +204,73 @@ namespace SensHagen.Controllers
 
     public class RegisterData
     {
+
+        private RegisterData()
+        {
+
+        }        
         public string MacAddress {get;set;}
         public string EmailAddress {get;set;}
         public string SensorName {get;set;}    // Right now or later on the MySensor page?
 
 
-        public string AreAllValuesGood()
+        public string ErrorMessage {get; private set;} = "";
+        public bool IsValid  {get; private set;} = false;
+
+        public static RegisterData GetInstance(string data)
+        {
+
+            RegisterData registerData = new RegisterData();
+
+            if (!String.IsNullOrWhiteSpace(data))
+            {
+                data = data.Trim();
+                if ( data.Length > 10)
+                {
+                    try
+                    {
+                        registerData = JsonConvert.DeserializeObject<RegisterData>(data);
+
+                        if (registerData.CheckValues())
+                        {
+                            // OK
+                            registerData.IsValid = true;
+                        }
+                        else
+                        {
+                            // NOK
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        int iex = -1;  //for debug breakpoint
+                        registerData.ErrorMessage = exception.Message;
+                    }
+
+                    int i = -1;  //for debug breakpoint
+
+                }
+                else
+                {
+                    registerData.ErrorMessage = "No valid json received.";
+                }        
+            }    
+            else
+            {
+                registerData.ErrorMessage = "No json received.";
+            }        
+
+            return registerData;
+        }
+
+
+
+        private bool CheckValues()
         {
 
             // check input
 
             bool isOk = true;
-            string errorMessage = "";
 
             if (!String.IsNullOrWhiteSpace(MacAddress))
             {
@@ -269,7 +284,7 @@ namespace SensHagen.Controllers
                 {
                     // Invalid MacAddress
                     isOk = false;
-                    errorMessage += $"Invalid MacAddress {MacAddress}";
+                    this.ErrorMessage += $"Invalid MacAddress {MacAddress}";
                 }
             } 
 
@@ -284,19 +299,12 @@ namespace SensHagen.Controllers
                 {
                     // Invalid MacAddress
                     isOk = false;
-                    errorMessage += $", Invalid EmailAddress {EmailAddress}";
+                    this.ErrorMessage += $", Invalid EmailAddress {EmailAddress}";
                 }
                 
             } 
 
-            if (isOk)
-            {
-                return "OK";
-            }
-            else
-            {
-                return $"NOK: {errorMessage}";
-            }
+            return isOk;
 
         }
 
@@ -305,19 +313,73 @@ namespace SensHagen.Controllers
 
     public class EventData
     {
+        private EventData()
+        {
+
+        }
+
         public string MacAddress {get;set;}
         public string EventType {get;set;}   // HeartBeat, Help, AllGood
         public double? BatteryVoltage {get;set;}
 
         public Models.SensorLogItemType LogItemType {get; private set;}
 
-        public string AreAllValuesGood()
+
+        public string ErrorMessage {get; private set;} = "";
+        public bool IsValid  {get; private set;} = false;
+
+        public static EventData GetInstance(string data)
+        {
+
+            EventData eventData = new EventData();
+
+            if (!String.IsNullOrWhiteSpace(data))
+            {
+                data = data.Trim();
+                if ( data.Length > 10)
+                {
+                    try
+                    {
+                        eventData = JsonConvert.DeserializeObject<EventData>(data);
+
+                        if (eventData.CheckValues())
+                        {
+                            // OK
+                            eventData.IsValid = true;
+                        }
+                        else
+                        {
+                            // NOK
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        int iex = -1;  //for debug breakpoint
+                        eventData.ErrorMessage = exception.Message;
+                    }
+
+                    int i = -1;  //for debug breakpoint
+
+                }
+                else
+                {
+                    eventData.ErrorMessage = "No valid json received.";
+                }        
+            }    
+            else
+            {
+                eventData.ErrorMessage = "No json received.";
+            }        
+
+            return eventData;
+        }
+
+        private bool CheckValues()
         {
 
             // check input
 
             bool isOk = true;
-            string errorMessage = "";
 
             if (!String.IsNullOrWhiteSpace(MacAddress))
             {
@@ -332,7 +394,7 @@ namespace SensHagen.Controllers
                 {
                     // Invalid MacAddress
                     isOk = false;
-                    errorMessage += $"Invalid MacAddress {MacAddress}";
+                    this.ErrorMessage += $"Invalid MacAddress {MacAddress}";
                 }
             } 
 
@@ -345,29 +407,22 @@ namespace SensHagen.Controllers
                 //
                 if (Enum.TryParse<Models.SensorLogItemType>(EventType, true, out sensorLogItemType))
                 {
-
                     if (sensorLogItemType != Models.SensorLogItemType.Unknown)
                     {
                         // Looks Good
                         this.LogItemType = sensorLogItemType;
                     }
-                    else
-                    {
-                        isOk = false;
-                        errorMessage += $"Invalid EventType {EventType}";
-                    }
                 }
-                
+
+                if (sensorLogItemType == SensorLogItemType.Unknown)
+                {
+                    isOk = false;
+                    this.ErrorMessage += $"Invalid EventType {EventType}";
+                }
+
             } 
 
-            if (isOk)
-            {
-                return "OK";
-            }
-            else
-            {
-                return $"NOK: {errorMessage}";
-            }
+            return isOk;
 
         }
 
