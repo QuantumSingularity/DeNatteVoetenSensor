@@ -11,6 +11,7 @@ using SensHagen.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 
 namespace SensHagen.Controllers
 {
@@ -35,10 +36,24 @@ namespace SensHagen.Controllers
 
 
         private readonly SensHagen.Models.DataBaseContext _context;
+        private readonly ILogger<SensorController> _logger;
 
-        public SensorController (SensHagen.Models.DataBaseContext context)
+        private readonly string _logFile = "";
+
+        public SensorController (SensHagen.Models.DataBaseContext context, ILogger<SensorController> logger)
         {
             _context = context;
+            _logger = logger;
+
+            if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
+            {
+                _logFile = $"{Environment.GetEnvironmentVariable("HOME")}/SensHagen-NVS";
+            }
+            else
+            {
+                _logFile = $"{Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")}\\SensHagen-NVS";
+            }
+
         }
 
 
@@ -49,6 +64,8 @@ namespace SensHagen.Controllers
             // Create record
             // Log
             // return ok/nok
+
+            this.OnLog("Register",data);
 
             bool isOk = false;
             string errorMessage = "";
@@ -125,6 +142,7 @@ namespace SensHagen.Controllers
             }
             else
             {
+                this.OnLog("Register",errorMessage);
                 return StatusCode(400, errorMessage);
             }
             
@@ -137,6 +155,8 @@ namespace SensHagen.Controllers
             // Create record
             // Log
             // return ok/nok
+
+            this.OnLog("Event",data);
 
             bool isOk = false;
             string errorMessage = "";
@@ -195,13 +215,41 @@ namespace SensHagen.Controllers
             }
             else
             {
+                this.OnLog("Event",errorMessage);
                 return StatusCode(400, errorMessage);
+            }
+
+        }
+
+        private void OnLog(string method, string value)
+        {
+            try
+            {
+
+                string remoteIp = "";
+                if (Request.Headers.ContainsKey("X-Forwarded-For"))
+                {
+                    remoteIp = Request.Headers["X-Forwarded-For"];
+                }
+
+                if (string.IsNullOrWhiteSpace(remoteIp))
+                {
+                    remoteIp = HttpContext.Connection.RemoteIpAddress.ToString();
+                }
+
+                System.IO.File.AppendAllText($"{_logFile}.{DateTime.Now.ToString("yyyy-MM-dd")}.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} {method}: [{remoteIp}] {value}\n");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(default(EventId),ex,method,null);
             }
 
         }
 
     }
 
+
+#region RegisterData and EventData
     public class RegisterData
     {
 
@@ -426,70 +474,7 @@ namespace SensHagen.Controllers
 
         }
 
-
-
-    }
-
-
-
-
-        /*
-
-    public class Example
-    {
-
-
-
-        public async void  Index()
-        {
-            Models.User user = default(Models.User);
-            Models.Sensor sensor = default(Models.Sensor);
-
-            using (Models.DataBaseContext context = new Models.DataBaseContext())
-            {
-                user = context.Users
-                .Include(q => q.LogItems)
-                .Include(q => q.Sensors)
-                .FirstOrDefault(q => q.Name == "Bas")
-                ;
-
-                if (user == null)
-                {
-                    user = new Models.User();
-                    user.Name = "Bas";
-                    user.Email = "bas@nattevoetensensor.nl";
-                    context.Users.Add(user);
-                    await context.SaveChangesAsync();   // to retrieve the UserId
-                    user.SetPassword("none");
-                    await context.SaveChangesAsync();
-
-                    sensor = new Models.Sensor();
-                    sensor.Name = "Bas01";
-                    sensor.Location = "Unknown";
-                    await context.SaveChangesAsync();
-
-                    user.Sensors.Add(sensor);
-                    await context.SaveChangesAsync();
-
-                }
-
-                Models.UserLogItem userLogItem = new Models.UserLogItem();
-                userLogItem.LogItemType = "Index";
-                user.LogItems.Add(userLogItem);
-                await context.SaveChangesAsync();
-
-                Models.SensorLogItem sensorLogItem = new Models.SensorLogItem();
-                sensorLogItem.LogType = SensorLogItemType.Heartbeat;
-                user.Sensors[0].LogItems.Add(sensorLogItem);
-                await context.SaveChangesAsync();
-
-            }
-
-        }
+#endregion
 
     }
-
-            */
-
-
 }

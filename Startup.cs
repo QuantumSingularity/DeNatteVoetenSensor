@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 /*
     https://blog.agile9.net/2018/08/21/create-net-core-application-and-deploy-it-to-raspberry-pi-arm-device-linux/
