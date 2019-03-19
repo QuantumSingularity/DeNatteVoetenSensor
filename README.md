@@ -12,6 +12,8 @@ dotnet publish -c Release -r linux-arm
 scp -r /home/bem/Projects/SensHagen/bin/Release/netcoreapp2.2/linux-arm/publish/* dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/ 
 <br /> 
 scp -r /home/bem/Projects/SensHagen/Data/ dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/
+<br /> 
+scp -r /home/bem/Projects/SensHagen/bin/Release/netcoreapp2.2/linux-arm/publish/Sens* dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/
 
 **Only changed Assemblies:** <br />
 scp -r /home/bem/Projects/SensHagen/bin/Release/netcoreapp2.2/linux-arm/publish/Sens* dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/

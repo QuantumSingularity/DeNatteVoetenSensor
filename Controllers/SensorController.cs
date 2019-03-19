@@ -30,7 +30,7 @@ namespace SensHagen.Controllers
 
 
 
-    [Route("api/[controller]")]
+    [Route("")]
     public class SensorController : Controller
     {
 
@@ -56,9 +56,19 @@ namespace SensHagen.Controllers
 
         }
 
+        [HttpGet, Route("R")]        
+        public async Task<IActionResult> RegisterShort(string d)
+        {
+            return await Register<RegisterDataShort>(d);
+        }
 
-        [HttpGet, Route("Register")]        
-        public async Task<IActionResult> Register(string data)
+        [HttpGet, Route("api/Sensor/Register")]        
+        public async Task<IActionResult> RegisterLong(string data)
+        {
+            return await Register<RegisterData>(data);
+        }
+
+        private async Task<IActionResult> Register<T>(string data) where T : RegisterData
         {
             // Input: MacAddress, EmailAddress, SensorName
             // Create record
@@ -69,7 +79,7 @@ namespace SensHagen.Controllers
 
             bool isOk = false;
             string errorMessage = "";
-            RegisterData registerData = RegisterData.GetInstance(data);
+            T registerData = RegisterData.GetInstance<T>(data);
 
             if (registerData.IsValid)
             {
@@ -143,13 +153,26 @@ namespace SensHagen.Controllers
             else
             {
                 this.OnLog("Register",errorMessage);
-                return StatusCode(400, errorMessage);
+                return StatusCode(400, $"{errorMessage}\n{data}");
             }
             
         }
 
-        [HttpGet, Route("Event")]        
-        public async Task<IActionResult> Event(string data)
+
+        [HttpGet, Route("E")]        
+        public async Task<IActionResult> EventShort(string d)
+        {
+            return await Event<EventDataShort>(d);
+        }
+
+        [HttpGet, Route("api/Sensor/Event")]            
+        public async Task<IActionResult> EventLong(string data)
+        {
+            return await Event<EventData>(data);
+        }
+
+        
+        private async Task<IActionResult> Event<T>(string data) where T : EventData
         {
             // Input: MacAddress, EventData
             // Create record
@@ -160,7 +183,7 @@ namespace SensHagen.Controllers
 
             bool isOk = false;
             string errorMessage = "";
-            EventData eventData = EventData.GetInstance(data);
+            T eventData = EventData.GetInstance<T>(data);
 
             if (eventData.IsValid)
             {
@@ -216,7 +239,7 @@ namespace SensHagen.Controllers
             else
             {
                 this.OnLog("Event",errorMessage);
-                return StatusCode(400, errorMessage);
+                return StatusCode(400, $"{errorMessage}\n{data}");
             }
 
         }
@@ -250,25 +273,43 @@ namespace SensHagen.Controllers
 
 
 #region RegisterData and EventData
-    public class RegisterData
+
+    public class RegisterDataShort : RegisterData
     {
 
-        private RegisterData()
+        public RegisterDataShort() : base()
         {
 
         }        
-        public string MacAddress {get;set;}
-        public string EmailAddress {get;set;}
-        public string SensorName {get;set;}    // Right now or later on the MySensor page?
+
+        [JsonProperty("ID")]
+        public override string MacAddress {get;set;}
+        [JsonProperty("E")]
+        public override string EmailAddress {get;set;}
+        [JsonProperty("SN")]
+        public override string SensorName {get;set;}  
+
+    }
+
+    public class RegisterData
+    {
+
+        public RegisterData()
+        {
+
+        }        
+        public virtual string MacAddress {get;set;}
+        public virtual string EmailAddress {get;set;}
+        public virtual string SensorName {get;set;}    // Right now or later on the MySensor page?
 
 
         public string ErrorMessage {get; private set;} = "";
         public bool IsValid  {get; private set;} = false;
 
-        public static RegisterData GetInstance(string data)
+        public static T GetInstance<T>(string data) where T : RegisterData
         {
 
-            RegisterData registerData = new RegisterData();
+            T registerData = Activator.CreateInstance<T>();
 
             if (!String.IsNullOrWhiteSpace(data))
             {
@@ -277,7 +318,7 @@ namespace SensHagen.Controllers
                 {
                     try
                     {
-                        registerData = JsonConvert.DeserializeObject<RegisterData>(data);
+                        registerData = JsonConvert.DeserializeObject<T>(data);
 
                         if (registerData.CheckValues())
                         {
@@ -335,6 +376,12 @@ namespace SensHagen.Controllers
                     this.ErrorMessage += $"Invalid MacAddress {MacAddress}";
                 }
             } 
+            else
+            {
+                // Invalid MacAddress
+                isOk = false;
+                this.ErrorMessage += $"Invalid MacAddress {MacAddress}";
+            }
 
             if (!String.IsNullOrWhiteSpace(EmailAddress))
             {
@@ -351,6 +398,12 @@ namespace SensHagen.Controllers
                 }
                 
             } 
+            else
+            {
+                // Invalid MacAddress
+                isOk = false;
+                this.ErrorMessage += $", Invalid EmailAddress {EmailAddress}";
+            }
 
             return isOk;
 
@@ -359,16 +412,33 @@ namespace SensHagen.Controllers
 
     }
 
+
+    public class EventDataShort : EventData
+    {
+
+        public EventDataShort() : base()
+        {
+
+        }        
+
+        [JsonProperty("ID")]
+        public override string MacAddress {get;set;}
+        [JsonProperty("E")]
+        public override string EventType {get;set;}
+        [JsonProperty("V")]
+        public override double? BatteryVoltage {get;set;}
+
+    }
     public class EventData
     {
-        private EventData()
+        public EventData()
         {
 
         }
 
-        public string MacAddress {get;set;}
-        public string EventType {get;set;}   // HeartBeat, Help, AllGood
-        public double? BatteryVoltage {get;set;}
+        public virtual string MacAddress {get;set;}
+        public virtual string EventType {get;set;}   // HeartBeat, Help, AllGood
+        public virtual double? BatteryVoltage {get;set;}
 
         public Models.SensorLogItemType LogItemType {get; private set;}
 
@@ -376,10 +446,10 @@ namespace SensHagen.Controllers
         public string ErrorMessage {get; private set;} = "";
         public bool IsValid  {get; private set;} = false;
 
-        public static EventData GetInstance(string data)
+        public static T GetInstance<T>(string data) where T : EventData
         {
 
-            EventData eventData = new EventData();
+            T eventData = Activator.CreateInstance<T>();
 
             if (!String.IsNullOrWhiteSpace(data))
             {
@@ -388,7 +458,7 @@ namespace SensHagen.Controllers
                 {
                     try
                     {
-                        eventData = JsonConvert.DeserializeObject<EventData>(data);
+                        eventData = JsonConvert.DeserializeObject<T>(data);
 
                         if (eventData.CheckValues())
                         {
@@ -445,6 +515,12 @@ namespace SensHagen.Controllers
                     this.ErrorMessage += $"Invalid MacAddress {MacAddress}";
                 }
             } 
+            else
+            {
+                // Invalid MacAddress
+                isOk = false;
+                this.ErrorMessage += $"Invalid MacAddress {MacAddress}";
+            }
 
             if (!String.IsNullOrWhiteSpace(EventType))
             {
@@ -469,6 +545,11 @@ namespace SensHagen.Controllers
                 }
 
             } 
+            else
+            {
+                isOk = false;
+                this.ErrorMessage += $"Invalid EventType";
+            }
 
             return isOk;
 
