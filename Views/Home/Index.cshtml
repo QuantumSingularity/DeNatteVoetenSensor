@@ -9,23 +9,23 @@
 
 <img src="images/boots.png" style="position:absolute; top:10px; left:10px;"/>
 
-<div class="text-center">
+<div class="text-center display-8">
     <h2 class="display-4">Users</h2>
     @foreach (var item in Model.Users)
     {
         @item.EmailAddress<br />
     }
     <h2 class="display-4">Sensors</h2>
-    @foreach (var item in Model.Sensors)
+    @foreach (var sensor in Model.Sensors)
     {
-        <h4>@item.MacAddress - @item.User.Name `@item.Name`<br />(@item.RegisterDate.ToString("dd-MM-yyyy HH:mm:ss")) (@item.ReRegisterDate?.ToString("dd-MM-yyyy HH:mm:ss"))</h4>
+        <h4>@sensor.MacAddress - @sensor.User.Name `@sensor.Name`<br />(@sensor.RegisterDate.ToString("dd-MM-yyyy HH:mm:ss")) (@sensor.ReRegisterDate?.ToString("dd-MM-yyyy HH:mm:ss"))</h4>
         <ul>
-        @foreach (var item2 in item.LogItems)
-        {
-            <li>@item2.TimeStamp - @item2.LogType - @item2.BatteryVoltage?.ToString("F2")</li>
-        }
+            <li>HeartBeat: @sensor.HeartBeatDate?.ToString("dd-MM-yyyy HH:mm:ss")</li>
+            <li>Battery: @sensor.BatteryVoltage?.ToString("F2") [@sensor.BatteryVoltageDate?.ToString("dd-MM-yyyy HH:mm:ss")]</li>
+            <li>DetectionStatus: @sensor.DetectionStatus @sensor.DetectionStatusDate?.ToString("dd-MM-yyyy HH:mm:ss")</li>
+            <li>LastDetectionOn: @sensor.LastDetectionOnDate?.ToString("dd-MM-yyyy HH:mm:ss")</li>
+            <li>LastDetectionOff: @sensor.LastDetectionOffDate?.ToString("dd-MM-yyyy HH:mm:ss")</li>
         </ul>
-
     }
     
 </div>

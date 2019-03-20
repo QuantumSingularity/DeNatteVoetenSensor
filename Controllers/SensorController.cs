@@ -56,6 +56,9 @@ namespace SensHagen.Controllers
 
         }
 
+
+#region Register
+
         [HttpGet, Route("R")]        
         public async Task<IActionResult> RegisterShort(string d)
         {
@@ -148,7 +151,7 @@ namespace SensHagen.Controllers
 
             if (isOk)
             {
-                return Ok();
+                return Ok("Registration Succeeded.");
             }
             else
             {
@@ -158,6 +161,10 @@ namespace SensHagen.Controllers
             
         }
 
+#endregion
+
+
+#region Event
 
         [HttpGet, Route("E")]        
         public async Task<IActionResult> EventShort(string d)
@@ -211,6 +218,32 @@ namespace SensHagen.Controllers
 
                     sensor.LogItems.Add(sensorLogItem);
 
+                    switch (eventData.LogItemType)
+                    {
+                        case SensorLogItemType.Heartbeat:
+                            sensor.HeartBeatDate = DateTime.Now;
+                            break;
+
+                        case SensorLogItemType.DetectionOn:
+                            sensor.LastDetectionOnDate = DateTime.Now;
+                            sensor.DetectionStatus = "on";
+                            break;
+
+                        case SensorLogItemType.DetectionOff:
+                            sensor.LastDetectionOffDate = DateTime.Now;
+                            sensor.DetectionStatus = "off";
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    if (eventData.BatteryVoltage != null && eventData.BatteryVoltage > 0.5)
+                    {
+                        sensor.BatteryVoltage = eventData.BatteryVoltage;
+                        sensor.BatteryVoltageDate = DateTime.Now;
+                    }
+
                     await _context.SaveChangesAsync();
 
                     isOk = true;
@@ -234,7 +267,7 @@ namespace SensHagen.Controllers
 
             if (isOk)
             {
-                return Ok();
+                return Ok("Event Processed.");
             }
             else
             {
@@ -270,6 +303,8 @@ namespace SensHagen.Controllers
         }
 
     }
+
+#endregion
 
 
 #region RegisterData and EventData
@@ -556,6 +591,7 @@ namespace SensHagen.Controllers
         }
 
 #endregion
+
 
     }
 }

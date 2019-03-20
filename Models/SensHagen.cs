@@ -64,6 +64,7 @@ namespace SensHagen.Models
         {
             LogItems = new List<SensorLogItem>();
             RegisterDate = DateTime.Now;
+            DetectionStatus = "-";
         }
 
         public int SensorId { get; set; }
@@ -81,6 +82,15 @@ namespace SensHagen.Models
 
         public List<SensorLogItem> LogItems { get; set; }
 
+        public DateTime? HeartBeatDate {get; set; }
+        public DateTime? LastDetectionOnDate {get; set; }
+        public DateTime? LastDetectionOffDate {get; set; }
+
+        public string DetectionStatus {get; set;}
+        public DateTime? DetectionStatusDate {get; set; }
+
+        public DateTime? BatteryVoltageDate {get; set; }
+        public double? BatteryVoltage { get; set; }
     }
 
 
