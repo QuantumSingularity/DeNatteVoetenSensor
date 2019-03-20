@@ -464,6 +464,9 @@ namespace SensHagen.Controllers
         public override double? BatteryVoltage {get;set;}
 
     }
+
+
+
     public class EventData
     {
         public EventData()
@@ -568,6 +571,12 @@ namespace SensHagen.Controllers
                 {
                     if (sensorLogItemType != Models.SensorLogItemType.Unknown)
                     {
+
+                        if ((int)sensorLogItemType > 10)
+                        {
+                            sensorLogItemType = (Models.SensorLogItemType)Enum.ToObject(typeof(Models.SensorLogItemType), (int)sensorLogItemType - 10);
+                        }
+
                         // Looks Good
                         this.LogItemType = sensorLogItemType;
                     }

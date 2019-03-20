@@ -53,10 +53,17 @@ namespace SensHagen.Models
     public enum SensorLogItemType
     {
         Unknown = 0,
+
         Heartbeat = 1,
         DetectionOn = 2,
-        DetectionOff = 3
+        DetectionOff = 3,
+
+        HB = 11,
+        On = 12,
+        Off = 13        
+
     }
+
 
     public class Sensor
     {
