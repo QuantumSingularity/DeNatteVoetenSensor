@@ -94,6 +94,7 @@ namespace SensHagen.Controllers
                 Models.Sensor sensor = default(Models.Sensor);
 
                 sensor = _context.Sensors
+                    .Include(q => q.User)
                     .FirstOrDefault(q => q.MacAddress == registerData.MacAddress)
                 ;
 
@@ -124,7 +125,7 @@ namespace SensHagen.Controllers
                     // Move sensor to new user.
 
                     Models.User userOld = sensor.User;
-                    if (user.UserId != userOld.UserId)
+                    if (userOld != null && user.UserId != userOld.UserId)
                     {
                         userOld.Sensors.Remove(sensor);
                         user.Sensors.Add(sensor);
