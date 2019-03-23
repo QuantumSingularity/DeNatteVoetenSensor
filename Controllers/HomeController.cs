@@ -128,8 +128,28 @@ namespace SensHagen.Controllers
             return View(myghome);
         }
 
+        public IActionResult Information()
+        {
+
+
+            string remoteIp = "";
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            {
+                remoteIp = Request.Headers["X-Forwarded-For"];
+            }
+
+            if (string.IsNullOrWhiteSpace(remoteIp))
+            {
+                remoteIp = HttpContext.Connection.RemoteIpAddress.ToString();
+            }
+
+            ViewBag.RemoteIp = remoteIp;
+            
+            return View();
+        }
+
         [Authorize]
-        public IActionResult Sensors()
+        public IActionResult MySensors()
         {
             return View();
         }

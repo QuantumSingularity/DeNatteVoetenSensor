@@ -121,7 +121,14 @@ namespace SensHagen.Controllers
                     sensor.ReRegisterDate = DateTime.Now;
 
                     // What to do if the user is changed ?
-                    //user.Sensors.Add(sensor);
+                    // Move sensor to new user.
+
+                    Models.User userOld = sensor.User;
+                    if (user.UserId != userOld.UserId)
+                    {
+                        userOld.Sensors.Remove(sensor);
+                        user.Sensors.Add(sensor);
+                    }
 
                     await _context.SaveChangesAsync();
 

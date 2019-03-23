@@ -1,14 +1,21 @@
 ﻿@model SensHagen.Models.LoginViewModels.LoginModel
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Ingelogd zijn is vereist om jouw sensoren te zien";
 }
 
 <h2>@ViewData["Title"]</h2>
+
+
+<div class="row">
+    <div class="col-md-6">
+            <p>Om in te loggen kun je hieronder je emailadres en wachtwoord intikken.<br/>
+               Heb je je nog niet geregisteerd, klik dan op de knop `Registreren`.</p>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-3">
         <form method="post">
-            <h4>Use a local account to log in.</h4>
-            <hr>
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="@Model.Username"></label>
@@ -29,6 +36,10 @@
                 <button type="submit" class="btn btn-default">Log in</button>
             </div>
         </form>
+        <form action="/account/register" method="get">
+            <button type="submit" class="btn btn-default">Registreren</button>
+        </form>
+
     </div>
 </div>
 
