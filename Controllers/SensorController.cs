@@ -172,6 +172,7 @@ namespace SensHagen.Controllers
 #endregion
 
 
+
 #region Event
 
         [HttpGet, Route("E")]        
@@ -234,11 +235,13 @@ namespace SensHagen.Controllers
 
                         case SensorLogItemType.DetectionOn:
                             sensor.LastDetectionOnDate = DateTime.Now;
+                            sensor.DetectionStatusDate = DateTime.Now;
                             sensor.DetectionStatus = "on";
                             break;
 
                         case SensorLogItemType.DetectionOff:
                             sensor.LastDetectionOffDate = DateTime.Now;
+                            sensor.DetectionStatusDate = DateTime.Now;
                             sensor.DetectionStatus = "off";
                             break;
 
@@ -310,9 +313,33 @@ namespace SensHagen.Controllers
 
         }
 
-    }
+#endregion
+
+
+
+#region API
+
+    [HttpGet, Route("api/GetSensorData")]  
+        public async Task<IActionResult> GetSensorData()
+        {
+
+            //List<Models.Sensor> sensors;
+
+            SensHagen.Controllers.ghome myghome = new ghome();
+            myghome.Users = await _context.Users.OrderBy(q => q.Name).ToListAsync();
+            myghome.Sensors = await _context.Sensors.Include(s => s.LogItems).OrderBy(q => q.RegisterDate).ToListAsync();
+
+
+            return PartialView("Partial/Sensors", myghome);
+
+        }
+
 
 #endregion
+
+
+    }
+
 
 
 #region RegisterData and EventData
@@ -607,8 +634,7 @@ namespace SensHagen.Controllers
 
         }
 
+    }
 #endregion
 
-
-    }
 }

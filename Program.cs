@@ -19,7 +19,7 @@ namespace SensHagen
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseUrls(new string[] {"http://localhost:8080/"})
+                .UseUrls(new string[] {"http://localhost:32768/"})
                 .UseStartup<Startup>();
     }
 }

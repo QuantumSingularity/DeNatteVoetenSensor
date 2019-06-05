@@ -2,32 +2,79 @@
 
 @{
     ViewData["Title"] = "Home Page";
-
-
-
 }
 
 <div class="text-center">
-    <h3><b>Users</b></h3>
-    @foreach (var item in Model.Users)
-    {
-        @item.EmailAddress <span>;</span>
-    }
-    
-    <br /><br />
 
-    <h3><b>Sensors</b></h3>
+    <h2><b>De NatteVoeten Sensor</b></h2>
+
+    <h3><b>Sensoren</b> <span class="badge badge-light" id="cntdwn"></span></h3>
+
+</div>
+
+@{
+    /*
     @foreach (var sensor in Model.Sensors)
     {
-        <h4>@sensor.MacAddress - @sensor.User.Name `@sensor.Name`</h4>
-        <ul>
-            <li>Registered: @sensor.RegisterDate.ToString("dd-MM-yyyy HH:mm:ss")</li>
-            <li>HeartBeat: @sensor.HeartBeatDate?.ToString("dd-MM-yyyy HH:mm:ss")</li>
-            <li>Battery: @sensor.BatteryVoltage?.ToString("F2") [@sensor.BatteryVoltageDate?.ToString("dd-MM-yyyy HH:mm:ss")]</li>
-            <li>DetectionStatus: @sensor.DetectionStatus @sensor.DetectionStatusDate?.ToString("dd-MM-yyyy HH:mm:ss")</li>
-            <li>LastDetectionOn: @sensor.LastDetectionOnDate?.ToString("dd-MM-yyyy HH:mm:ss")</li>
-            <li>LastDetectionOff: @sensor.LastDetectionOffDate?.ToString("dd-MM-yyyy HH:mm:ss")</li>
-        </ul>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr><th colspan="3">@sensor.MacAddress - @sensor.User.Name `@sensor.Name`</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Registered</td><td></td><td>@sensor.RegisterDate.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
+                <tr><td>HeartBeat</td><td></td><td>@sensor.HeartBeatDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
+                <tr><td>Battery</td><td>@sensor.BatteryVoltage?.ToString("F2")</td><td>@sensor.BatteryVoltageDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
+                <tr><td>DetectionStatus</td><td>@sensor.DetectionStatus</td><td>@sensor.DetectionStatusDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
+                <tr><td>LastDetectionOn</td><td></td><td>@sensor.LastDetectionOnDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
+                <tr><td>LastDetectionOff</td><td></td><td>@sensor.LastDetectionOffDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
+            </tbody>
+        </table>
     }
-    
+    */
+}
+<div class="row flex-xl-nowrap">
+
+    <div class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 main">
+        <div id="viewPlaceHolder">Loading....</div>
+    </div>
+
 </div>
+
+<script>
+
+    function CountBack(secs) {
+
+        if (secs < 0) {
+            LoadQuery(0);
+            return;
+        }
+        $("#cntdwn").html(secs.toString());
+
+        setTimeout("CountBack(" + (secs - 1) + ")", 1000);
+
+    }
+
+    function LoadQuery() {
+
+               
+        $("#viewPlaceHolder").load("/api/GetSensorData");
+
+/*
+        $("#viewPlaceHolder").load("/api/GetSensorData",
+            {
+            }, function () { });
+*/
+
+        CountBack(5);
+
+    };
+
+
+    $(document).ready()
+    {
+        LoadQuery();
+    }
+
+
+
+</script>

@@ -1,0 +1,92 @@
+rm -R Migrations 
+rm ./Data/*.db 
+dotnet ef migrations add InitialCreate 
+dotnet ef database update 
+
+http://localhost:8080/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22nattevoetensensor%22}
+http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.76}
+http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EventType%22%3A%22detectionon%22%2C%22BatteryVoltage%22%3A3.72}
+http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EventType%22%3A%22detectionoff%22%2C%22BatteryVoltage%22%3A3.71}
+
+
+
+
+http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.75%22}
+
+
+http://localhost:8080/api/Sensor/Register?data={%22MacAddress%22%3A%22BA:01:02:03:04:05%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22Als%20het%20Beessie%20maar%20een%20Naam%20heeft%22}
+http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%22BA:01:02:03:04:05%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.76}
+http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%22BA:01:02:03:04:05%22%2C%22EventType%22%3A%22DetectionOn%22}
+http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%22BA:01:02:03:04:05%22%2C%22EventType%22%3A%22DetectionOff%22}
+
+
+
+
+http://localhost:8080/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22nattevoetensensor%22}
+
+http://rpi3a.bem.dmz:8443/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22nattevoetensensor%22}
+
+
+http://rpi3a.bem.dmz:8443/api/Sensor/Event?data={%22MacAddress%22%3A%22AA:01:02:03:04:05%22%2C%22EventType%22%3A%22DetectionOn%22}
+http://rpi3a.bem.dmz:8443
+http://rpi3a.bem.dmz:8443
+
+
+Al je een foutieve json stuurt, geeft ie nu een nette 400 error: 
+
+http://api.nattevoetensensor.nl:16384/api/Sensor/Event?data={%22MacAddress%22%3A%22BA:01:02:03:04:05%22%2C%22EventType%22%3A%22DetectionOn%22%22}
+After parsing a value an unexpected character was encountered: ". Path 'EventType', line 1, position 59.
+
+http://api.nattevoetensensor.nl:16384/api/Sensor/Event?data={%22MacAddress%22%3A%22AA:01:02:03:04:05%22%2C%22EventType%22%3A%22DetectionOn%22}
+Invalid Sensor. This MacAddress is not registered.
+
+http://api.nattevoetensensor.nl:16384/api/Sensor/Event?data={%22MacAddress%22%3A%22BA:01:02:03:04:05%22%2C%22EventType%22%3A%22DetectionOnn%22}
+Invalid EventType DetectionOnn
+
+
+http://api.nattevoetensensor.nl:16384/api/Sensor/Register?data={%22MacAddress%22%3A%22BA:01:02:03:04:05%22%2C%22EmailAddress%22%3A%22bass@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22Als%20het%20Beessie%20maar%20een%20Naam%20heeft%22}
+Invalid User. This EmailAddress is not registered.
+
+http://api.nattevoetensensor.nl:16384/api/Sensor/Register?data={%22MacAddress%22%3A%2201:02:03:04:05%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22Als%20het%20Beessie%20maar%20een%20Naam%20heeft%22}
+Invalid MacAddress 01:02:03:04:05
+
+
+http://api.nattevoetensensor.nl:16384/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22nattevoetensensor%22}
+http://localhost:8080/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22nattevoetensensor%22}
+http://rpi3a.bem.dmz:8443/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22nattevoetensensor%22%22}
+
+http://rpi3a.bem.dmz:8443/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22nattevoetensensor%22}
+
+
+http://api.nattevoetensensor.nl:16384/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22nattevoetensensor%22}
+http://api.nattevoetensensor.nl:16384/R?d={%22ID%22%3A%2258:31:90:A4:AE:30%22%2C%22E%22%3A%22bas@nattevoetensensor.nl%22%2C%22SN%22%3A%22nattevoetensensor%22}
+http://api.nattevoetensensor.nl:16384/api/Sensor/Event?data={%22MacAddress%22%3A%22BA:01:02:03:04:05%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.76}
+http://api.nattevoetensensor.nl:16384/E?d={%22ID%22%3A%22BA:01:02:03:04:05%22%2C%22E%22%3A%22heartbeat%22%2C%22V%22%3A3.72}
+
+https://rpi3a.bem.dmz:8443/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22anton@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22gepruts fase01%22}
+http://rpi3a.bem.dmz:8443/R?d={%22ID%22%3A%2258:31:90:A4:AE:30%22%2C%22E%22%3A%22bas@nattevoetensensor.nl%22%2C%22SN%22%3A%22nattevoetensensor%22}
+http://rpi3a.bem.dmz:8443/api/Sensor/Event?data={%22MacAddress%22%3A%22BA:01:02:03:04:05%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.14}
+http://rpi3a.bem.dmz:8443/E?d={%22ID%22%3A%22BA:01:02:03:04:05%22%2C%22E%22%3A%22heartbeat%22%2C%22V%22%3A3.72}
+
+
+http://localhost:8080/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22nattevoetensensor%22}
+http://localhost:8080/R?d={%22ID%22%3A%2258:31:90:A4:AE:30%22%2C%22E%22%3A%22bas@nattevoetensensor.nl%22%2C%22SN%22%3A%22nattevoetensensor%22}
+
+http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.76}
+http://localhost:8080/E?d={%22ID%22%3A%2258:31:90:A4:AE:30%22%2C%22E%22%3A%22heartbeat%22%2C%22V%22%3A3.72}
+
+
+
+
+
+https://rpi3a.bem.dmz:8443/api/Sensor/Event?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.99}
+http://localhost:8080/E?d={%22ID%22%3A%2258:31:90:A4:AE:30%22%2C%22E%22%3A%22HB%22%2C%22V%22%3A3.72}
+
+https://rpi3a.bem.dmz:8443/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22anton@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22gepruts fase01%22}
+https://rpi3a.bem.dmz:8443/api/Sensor/Event?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.99}
+
+http://localhost:8080/api/Sensor/Register?data={%22MacAddress%22%3A%2258:31:90:A4:AE:30%22%2C%22EmailAddress%22%3A%22anton@nattevoetensensor.nl%22%2C%22SensorName%22%3A%22gepruts fase01%22}
+
+
+
+
