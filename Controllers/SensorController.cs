@@ -346,7 +346,7 @@ namespace SensHagen.Controllers
 //https://upstream.nattevoetensensor.nl/smartZwolleHub.json
 //    [HttpGet, Route("api/GetSensorDataJSON")]  
     [HttpGet, Route("smartZwolleHub.json")]  
-        public async Task<IActionResult> GetSensoGetSensorDataJSONrData()
+        public async Task<IActionResult> GetSensoGetSensorDataJSONData()
         {
 
             /*
@@ -362,16 +362,28 @@ namespace SensHagen.Controllers
                 Models.SensorData sensorData = new Models.SensorData();
                 sensorData.ID = sensor.MacAddress;
                 sensorData.Type = "NVS";
-                sensorData.LastUpdate = sensor.HeartBeatDate;
-                sensorData.LastActive = sensor.LastDetectionOnDate;
+                sensorData.Status = "UNKNOWN";
+                if (sensor.DetectionStatus == "on") { sensorData.Status = "HIGH";}
+                if (sensor.DetectionStatus == "off") { sensorData.Status = "LOW";}
+                sensorData.LastUpdate = sensor.LastDetectionOnDate;
+                sensorData.LastActive = sensor.HeartBeatDate;
                 sensorData.Location = new Models.SensorData_Location() {Lan=52.539717, Lon=6.050211};
 
+
+                List<Models.SensorLogItem> logItemsOn = sensor.LogItems.Where(q => q.LogType == SensorLogItemType.DetectionOn).OrderByDescending(q => q.TimeStamp).Take(3).ToList();
+
                 sensorData.History =  new List<Models.SensorData_History>();
-                foreach (Models.SensorLogItem logItem in sensor.LogItems)
+                foreach (Models.SensorLogItem logItem in logItemsOn)
                 {
                     Models.SensorData_History history = new Models.SensorData_History();
                     history.eventID = logItem.SensorLogItemId;
                     history.start = logItem.TimeStamp;
+
+                    List<Models.SensorLogItem> logItemsOff = sensor.LogItems.Where(q => q.LogType == SensorLogItemType.DetectionOff && q.TimeStamp >= logItem.TimeStamp).OrderBy(q => q.TimeStamp).Take(1).ToList();
+                    if (logItemsOff.Count > 0)
+                    {
+                       history.end = logItemsOff[0].TimeStamp;
+                    }
 
                     sensorData.History.Add(history);
                 }
