@@ -221,5 +221,35 @@ namespace SensHagen.Models
 
         public User User { get; set; }
     }    
+
+
+    #region Anton API
+    public class SensorData_Location
+    {
+        public double Lan { get; set; }
+        public double Lon { get; set; }
+    }
+
+    public class SensorData_History
+    {
+        public int eventID { get; set; }
+        public DateTime? start { get; set; }
+        public DateTime? end { get; set; }
+    }
+
+    public class SensorData
+    {
+        public string ID { get; set; }
+        public string Type { get; set; }
+        public string Status { get; set; }
+        public DateTime? LastUpdate { get; set; }
+        public DateTime? LastActive { get; set; }
+        public SensorData_Location Location { get; set; }
+        public List<SensorData_History> History { get; set; }
+    }
+
+    #endregion
+
+
 }
 

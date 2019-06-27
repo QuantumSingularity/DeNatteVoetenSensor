@@ -335,6 +335,45 @@ namespace SensHagen.Controllers
         }
 
 
+    [HttpGet, Route("api/GetSensorDataJSON")]  
+        public async Task<IActionResult> GetSensoGetSensorDataJSONrData()
+        {
+
+            List<Models.SensorData> sensorsData = new List<Models.SensorData>();
+
+            List<Models.Sensor> sensors = await _context.Sensors.Include(s => s.LogItems).OrderBy(q => q.RegisterDate).ToListAsync();
+
+            foreach (Models.Sensor sensor in sensors)
+            {
+                Models.SensorData sensorData = new Models.SensorData();
+                sensorData.ID = sensor.MacAddress;
+                sensorData.Type = "NVS";
+                sensorData.LastUpdate = sensor.HeartBeatDate;
+                sensorData.LastActive = sensor.LastDetectionOnDate;
+                sensorData.Location = new Models.SensorData_Location() {Lan=52.539717, Lon=6.050211};
+
+                sensorData.History =  new List<Models.SensorData_History>();
+                foreach (Models.SensorLogItem logItem in sensor.LogItems)
+                {
+                    Models.SensorData_History history = new Models.SensorData_History();
+                    history.eventID = logItem.SensorLogItemId;
+                    history.start = logItem.TimeStamp;
+
+                    sensorData.History.Add(history);
+                }
+
+                sensorsData.Add(sensorData);
+                
+            }
+
+
+            return new OkObjectResult(sensorsData);
+
+        }
+
+
+
+
 #endregion
 
 
