@@ -47,11 +47,11 @@ namespace SensHagen.Controllers
 
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                _logFile = $"{Environment.GetEnvironmentVariable("HOME")}";
+                _logFile = $"{Environment.GetEnvironmentVariable("HOME")}/";
             }
             else
             {
-                _logFile = $"{Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")}";
+                _logFile = $"{Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")}\\";
             }
 
             _logger.LogInformation($"LogFile: {_logFile}");
