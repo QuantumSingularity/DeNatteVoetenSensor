@@ -335,9 +335,15 @@ namespace SensHagen.Controllers
         }
 
 
-    [HttpGet, Route("api/GetSensorDataJSON")]  
+//https://upstream.nattevoetensensor.nl/smartZwolleHub.json
+//    [HttpGet, Route("api/GetSensorDataJSON")]  
+    [HttpGet, Route("smartZwolleHub.json")]  
         public async Task<IActionResult> GetSensoGetSensorDataJSONrData()
         {
+
+            /*
+                mijn plan was: LastUpdate = laatste statust update (hoog/laag); lastactive = laatste bericht overall (incl. HB&R).
+            */
 
             List<Models.SensorData> sensorsData = new List<Models.SensorData>();
 
