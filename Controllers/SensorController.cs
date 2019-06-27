@@ -47,13 +47,14 @@ namespace SensHagen.Controllers
 
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                _logFile = $"{Environment.GetEnvironmentVariable("HOME")}/SensHagen-NVS";
+                _logFile = $"{Environment.GetEnvironmentVariable("HOME")}/NVS";
             }
             else
             {
-                _logFile = $"{Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")}\\SensHagen-NVS";
+                _logFile = $"{Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")}\\NVS";
             }
 
+            _logger.LogInformation($"LogFile: {_logFile}");
         }
 
 
@@ -298,13 +299,19 @@ namespace SensHagen.Controllers
                 {
                     remoteIp = Request.Headers["X-Forwarded-For"];
                 }
-
                 if (string.IsNullOrWhiteSpace(remoteIp))
                 {
                     remoteIp = HttpContext.Connection.RemoteIpAddress.ToString();
                 }
 
-                System.IO.File.AppendAllText($"{_logFile}.{DateTime.Now.ToString("yyyy-MM-dd")}.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} {method}: [{remoteIp}] {value}\n");
+                string host = "";
+                host = Request.Host.Host;
+                if (String.IsNullOrWhiteSpace(host))
+                {
+                    host = "Unknown";
+                }
+
+                System.IO.File.AppendAllText($"{_logFile}.{host}.{DateTime.Now.ToString("yyyy-MM-dd")}.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} {method}: [{remoteIp}] {value}\n");
             }
             catch (Exception ex)
             {
@@ -329,6 +336,7 @@ namespace SensHagen.Controllers
             myghome.Users = await _context.Users.OrderBy(q => q.Name).ToListAsync();
             myghome.Sensors = await _context.Sensors.Include(s => s.LogItems).OrderBy(q => q.RegisterDate).ToListAsync();
 
+            this.OnLog("API","/api/GetSensorData");
 
             return PartialView("Partial/Sensors", myghome);
 
@@ -372,6 +380,7 @@ namespace SensHagen.Controllers
                 
             }
 
+            this.OnLog("API","smartZwolleHub.json");
 
             return new OkObjectResult(sensorsData);
 
