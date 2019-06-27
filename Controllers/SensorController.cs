@@ -311,7 +311,7 @@ namespace SensHagen.Controllers
                     host = "Unknown";
                 }
 
-                System.IO.File.AppendAllText($"{_logFile}.{host}.{DateTime.Now.ToString("yyyy-MM-dd")}.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} [{host}] {method}: [{remoteIp}] {value}\n");
+                System.IO.File.AppendAllText($"{_logFile}{host}.{DateTime.Now.ToString("yyyy-MM-dd")}.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} [{host}] {method}: [{remoteIp}] {value}\n");
             }
             catch (Exception ex)
             {
