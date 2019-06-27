@@ -47,11 +47,11 @@ namespace SensHagen.Controllers
 
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                _logFile = $"{Environment.GetEnvironmentVariable("HOME")}/NVS";
+                _logFile = $"{Environment.GetEnvironmentVariable("HOME")}";
             }
             else
             {
-                _logFile = $"{Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")}\\NVS";
+                _logFile = $"{Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")}";
             }
 
             _logger.LogInformation($"LogFile: {_logFile}");
@@ -311,7 +311,7 @@ namespace SensHagen.Controllers
                     host = "Unknown";
                 }
 
-                System.IO.File.AppendAllText($"{_logFile}.{host}.{DateTime.Now.ToString("yyyy-MM-dd")}.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} {method}: [{remoteIp}] {value}\n");
+                System.IO.File.AppendAllText($"{_logFile}.{host}.{DateTime.Now.ToString("yyyy-MM-dd")}.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} [{host}] {method}: [{remoteIp}] {value}\n");
             }
             catch (Exception ex)
             {
