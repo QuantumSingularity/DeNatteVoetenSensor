@@ -365,8 +365,17 @@ namespace SensHagen.Controllers
                 sensorData.Status = "UNKNOWN";
                 if (sensor.DetectionStatus == "on") { sensorData.Status = "HIGH";}
                 if (sensor.DetectionStatus == "off") { sensorData.Status = "LOW";}
-                sensorData.LastUpdate = sensor.LastDetectionOnDate;
-                sensorData.LastActive = sensor.HeartBeatDate;
+                sensorData.LastUpdate = sensor.LastDetectionOnDate?.ToUniversalTime();
+                sensorData.LastActive = sensor.HeartBeatDate?.ToUniversalTime();
+
+                if (sensorData.LastUpdate != null && sensorData.LastActive != null)
+                {
+                    if (sensorData.LastUpdate > sensorData.LastActive)
+                    {
+                        sensorData.LastActive = sensorData.LastUpdate;
+                    }
+                }
+
                 sensorData.Location = new Models.SensorData_Location() {Lan=52.539717, Lon=6.050211};
 
 
@@ -377,12 +386,19 @@ namespace SensHagen.Controllers
                 {
                     Models.SensorData_History history = new Models.SensorData_History();
                     history.eventID = logItem.SensorLogItemId;
-                    history.start = logItem.TimeStamp;
+                    history.start = logItem.TimeStamp.ToUniversalTime();
 
-                    List<Models.SensorLogItem> logItemsOff = sensor.LogItems.Where(q => q.LogType == SensorLogItemType.DetectionOff && q.TimeStamp >= logItem.TimeStamp).OrderBy(q => q.TimeStamp).Take(1).ToList();
-                    if (logItemsOff.Count > 0)
+                    try
                     {
-                       history.end = logItemsOff[0].TimeStamp;
+                        List<Models.SensorLogItem> logItemsOff = sensor.LogItems.Where(q => q.LogType == SensorLogItemType.DetectionOff && q.TimeStamp >= logItem.TimeStamp).OrderBy(q => q.TimeStamp).Take(1).ToList();
+                        if (logItemsOff.Count > 0)
+                        {
+                        history.end = logItemsOff[0].TimeStamp.ToUniversalTime();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "GetSensoGetSensorDataJSONData", null);
                     }
 
                     sensorData.History.Add(history);
