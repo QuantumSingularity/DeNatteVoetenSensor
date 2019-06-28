@@ -176,6 +176,9 @@ namespace SensHagen.Controllers
 
 #region Event
 
+// {"ID":"60:3C:90:A4:AE:30","E":"Off","V":4.07}
+// https://www.nattevoetensensor.nl/E?d={%22ID%22:%2260:3C:90:A4:AE:30%22,%22E%22:%22Off%22,%22V%22:4.07}
+// https://www.nattevoetensensor.nl/E?d={%22ID%22:%2260:3C:90:A4:AE:30%22,%22E%22:%22On%22,%22V%22:4.01}
         [HttpGet, Route("E")]        
         public async Task<IActionResult> EventShort(string d)
         {
@@ -405,7 +408,14 @@ namespace SensHagen.Controllers
                 }
 
                 sensorsData.Add(sensorData);
-                
+
+                if (sensorData.History.Count > 0)
+                {
+                    sensorData.eventID = sensorData.History[0].eventID;
+                    sensorData.start = sensorData.History[0].start;
+                    sensorData.end = sensorData.History[0].end;
+                }
+
             }
 
             this.OnLog("API","smartZwolleHub.json");

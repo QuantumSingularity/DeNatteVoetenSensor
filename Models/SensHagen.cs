@@ -246,6 +246,11 @@ namespace SensHagen.Models
         public DateTime? LastActive { get; set; }
         public SensorData_Location Location { get; set; }
         public List<SensorData_History> History { get; set; }
+
+        public int eventID { get; set; }
+        public DateTime? start { get; set; }
+        public DateTime? end { get; set; }
+                
     }
 
     #endregion
