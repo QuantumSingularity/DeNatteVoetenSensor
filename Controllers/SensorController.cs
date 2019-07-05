@@ -47,11 +47,11 @@ namespace SensHagen.Controllers
 
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                _logFile = $"{Environment.GetEnvironmentVariable("HOME")}/";
+                _logFile = $"{Environment.GetEnvironmentVariable("HOME")}/log/";
             }
             else
             {
-                _logFile = $"{Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")}\\";
+                _logFile = $"{Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%")}\\log\\";
             }
 
             _logger.LogInformation($"LogFile: {_logFile}");
@@ -398,6 +398,7 @@ namespace SensHagen.Controllers
                         {
                         history.end = logItemsOff[0].TimeStamp.ToUniversalTime();
                         }
+
                     }
                     catch (Exception ex)
                     {
