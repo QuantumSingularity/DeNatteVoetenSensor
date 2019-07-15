@@ -1,3 +1,5 @@
+# /lib/systemd/system/nvs.service
+
 [Unit]
 Description=De NatteVoeten Sensor
 After=network.target
@@ -7,7 +9,7 @@ User=nvs-www
 Group=nvs-www
 WorkingDirectory=/home/nvs-www/nvs
 PIDFile=/home/nvs-www/nvs.lock
-ExecStart=/usr/bin/dotnet /home/nvs-www/nvs/SensHagen-NVS
+ExecStart=/usr/bin/dotnet /home/nvs-www/nvs/DeNatteVoetenSensor.dll
 KillMode=process
 Restart=on-failure
 
