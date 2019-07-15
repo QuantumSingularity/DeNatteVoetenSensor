@@ -1072,7 +1072,7 @@ a.text-dark:hover, a.text-dark:focus {
 .navbar {
     /*border-bottom: 10px solid #60bfe8;*/
     background: #0a5189;
-    border-top: 19px solid #60bfe8 !important;
+    border-top: 20px solid #00ADEE !important;
     padding-top: 0;
     padding-bottom: 0;
 }
@@ -1140,7 +1140,7 @@ table td {
 
 table th {
     white-space: nowrap;
-    background: none repeat scroll 0 0 #0a5189;
+    background: none repeat scroll 0 0 #006AB6;
     color: #fff;
 }
 
@@ -1335,3 +1335,31 @@ table.dataTable {
     overflow: auto;
 }
 
+h1, h2 {
+    background-color: #00ADEE;
+    color: white;
+    /*text-transform: uppercase;*/
+    -ms-transform: rotate(-2deg); /* IE 9 */
+    -webkit-transform: rotate(-2deg); /* Safari */
+    transform: rotate(-2deg);
+    display: inline-block;
+    padding: 6px 20px;
+    border: 1px solid white;
+}
+
+
+.footer {
+    height: 50px;
+    background-image: -moz-linear-gradient(180deg, #866F5D 25%, #66C5AE 25%, #66C5AE 50%, #4C92CE 50%, #4C92CE 75%, #006AB6 75%);
+    background-image: -webkit-linear-gradient(180deg, #866F5D 25%, #66C5AE 25%, #66C5AE 50%, #4C92CE 50%, #4C92CE 75%, #006AB6 75%);
+    background-image: linear-gradient(180deg, #866F5D 25%, #66C5AE 25%, #66C5AE 50%, #4C92CE 50%, #4C92CE 75%, #006AB6 75%);
+    border: none;
+}
+
+body {
+    background-image: linear-gradient(0deg, #8BD7F6 0%, white 50%)
+}
+
+.text-muted {
+    color: #fff !important;
+}
