@@ -1,4 +1,4 @@
-# SensHagen - De NatteVoeten Sensor
+# De NatteVoeten Sensor
 For me: [The Syntax](https://help.github.com/articles/basic-writing-and-formatting-syntax).
 
 # Publish to RaspberryPi 
