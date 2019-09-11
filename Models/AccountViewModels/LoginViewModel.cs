@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace SensHagen.Models.LoginViewModels
+namespace Nvs.Models.LoginViewModels
 {
 
     public class LoginModel

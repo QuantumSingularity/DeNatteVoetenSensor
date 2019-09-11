@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace SensHagenNVS.Migrations
+namespace DeNatteVoetenSensor.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -12,7 +13,7 @@ namespace SensHagenNVS.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     UniqueIdentifier = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
@@ -34,7 +35,7 @@ namespace SensHagenNVS.Migrations
                 columns: table => new
                 {
                     SensorId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     MacAddress = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Location = table.Column<string>(nullable: true),
@@ -66,7 +67,7 @@ namespace SensHagenNVS.Migrations
                 columns: table => new
                 {
                     UserLogItemId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     UserId = table.Column<int>(nullable: false),
                     TimeStamp = table.Column<DateTime>(nullable: false),
                     LogItemType = table.Column<string>(nullable: true),
@@ -88,7 +89,7 @@ namespace SensHagenNVS.Migrations
                 columns: table => new
                 {
                     SensorLogItemId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     SensorId = table.Column<int>(nullable: false),
                     LogType = table.Column<int>(nullable: false),
                     Value = table.Column<string>(nullable: true),

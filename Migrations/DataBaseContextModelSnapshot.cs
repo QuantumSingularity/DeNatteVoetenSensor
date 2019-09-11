@@ -3,9 +3,10 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SensHagen.Models;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using Nvs.Models.Postgresql;
 
-namespace SensHagenNVS.Migrations
+namespace DeNatteVoetenSensor.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
     partial class DataBaseContextModelSnapshot : ModelSnapshot
@@ -14,9 +15,11 @@ namespace SensHagenNVS.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854");
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("SensHagen.Models.Sensor", b =>
+            modelBuilder.Entity("Nvs.Models.Sensor", b =>
                 {
                     b.Property<int>("SensorId")
                         .ValueGeneratedOnAdd();
@@ -58,7 +61,7 @@ namespace SensHagenNVS.Migrations
                     b.ToTable("Sensors");
                 });
 
-            modelBuilder.Entity("SensHagen.Models.SensorLogItem", b =>
+            modelBuilder.Entity("Nvs.Models.SensorLogItem", b =>
                 {
                     b.Property<int>("SensorLogItemId")
                         .ValueGeneratedOnAdd();
@@ -80,7 +83,7 @@ namespace SensHagenNVS.Migrations
                     b.ToTable("SensorLogItems");
                 });
 
-            modelBuilder.Entity("SensHagen.Models.User", b =>
+            modelBuilder.Entity("Nvs.Models.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd();
@@ -110,7 +113,7 @@ namespace SensHagenNVS.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SensHagen.Models.UserLogItem", b =>
+            modelBuilder.Entity("Nvs.Models.UserLogItem", b =>
                 {
                     b.Property<int>("UserLogItemId")
                         .ValueGeneratedOnAdd();
@@ -130,24 +133,24 @@ namespace SensHagenNVS.Migrations
                     b.ToTable("UserLogItems");
                 });
 
-            modelBuilder.Entity("SensHagen.Models.Sensor", b =>
+            modelBuilder.Entity("Nvs.Models.Sensor", b =>
                 {
-                    b.HasOne("SensHagen.Models.User", "User")
+                    b.HasOne("Nvs.Models.User", "User")
                         .WithMany("Sensors")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("SensHagen.Models.SensorLogItem", b =>
+            modelBuilder.Entity("Nvs.Models.SensorLogItem", b =>
                 {
-                    b.HasOne("SensHagen.Models.Sensor", "Sensor")
+                    b.HasOne("Nvs.Models.Sensor", "Sensor")
                         .WithMany("LogItems")
                         .HasForeignKey("SensorId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SensHagen.Models.UserLogItem", b =>
+            modelBuilder.Entity("Nvs.Models.UserLogItem", b =>
                 {
-                    b.HasOne("SensHagen.Models.User", "User")
+                    b.HasOne("Nvs.Models.User", "User")
                         .WithMany("LogItems")
                         .HasForeignKey("UserId")
                         .HasConstraintName("ForeignKey_UserLogItem_User")

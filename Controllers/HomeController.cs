@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SensHagen.Models;
+using Nvs.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 
-namespace SensHagen.Controllers
+namespace Nvs.Controllers
 {
  	
     public class ghome
@@ -20,29 +20,32 @@ namespace SensHagen.Controllers
     public class HomeController : Controller
     {
 
-        private readonly SensHagen.Models.DataBaseContext _context;
+        private readonly Nvs.Models.Postgresql.DataBaseContext _context;
+        private readonly Nvs.Models.SqLite.DataBaseContext _oldcontext;
 
-        public HomeController (SensHagen.Models.DataBaseContext context)
+        public HomeController (Nvs.Models.Postgresql.DataBaseContext context, Nvs.Models.SqLite.DataBaseContext oldcontext)
         {
             _context = context;
+            _oldcontext = oldcontext;
         }
 
         public async Task<IActionResult> Index()
         {
             Models.User user = default(Models.User);
 
+            await MigrateDb();
 
+            /*
             if (_context.Users.Count() == 0)
             {
 
-                /*
-                user = _context.Users
-                .Include(q => q.LogItems)
-                .Include(q => q.Sensors)
-                .FirstOrDefault(q => q.Name == "Bas")
-                ;
-                 */
-
+                
+                //user = _context.Users
+                //.Include(q => q.LogItems)
+                //.Include(q => q.Sensors)
+                //.FirstOrDefault(q => q.Name == "Bas")
+                //;
+                 
                 user = new Models.User()
                 {
                     Name = "Bas",
@@ -94,6 +97,7 @@ namespace SensHagen.Controllers
                 await _context.SaveChangesAsync();
 
             }
+            */
 
             string remoteIp = "";
             if (Request.Headers.ContainsKey("X-Forwarded-For"))
@@ -159,5 +163,92 @@ namespace SensHagen.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
+
+       public async Task<IActionResult> MigrateDb()
+        {
+
+            if (_context.Users.Count() == 0)
+            {
+
+                List<Models.User> users = _oldcontext.Users.OrderBy(q => q.UserId).ToList();
+
+                if (users.Count > 0)
+                {
+                    _context.Users.AddRange(users);
+                    await _context.SaveChangesAsync();
+
+                    List<Models.Sensor> sensors = _oldcontext.Sensors.OrderBy(q => q.SensorId).ToList();
+                    _context.Sensors.AddRange(sensors);
+                    await _context.SaveChangesAsync();
+
+                    List<Models.SensorLogItem> sensorLogItems = _oldcontext.SensorLogItems.OrderBy(q => q.SensorLogItemId).ToList();
+                    _context.SensorLogItems.AddRange(sensorLogItems);
+                    await _context.SaveChangesAsync();
+
+                }
+                else
+                {
+                    Models.User user;
+
+                    user = new Models.User()
+                    {
+                        Name = "Bas",
+                        EmailAddress = "bas@nattevoetensensor.nl"
+                    };
+                    user.SetPassword("none");
+                    _context.Users.Add(user);
+
+                    user = new Models.User()
+                    {
+                        Name = "Anton",
+                        EmailAddress = "anton@nattevoetensensor.nl"
+                    };
+                    user.SetPassword("none");
+                    _context.Users.Add(user);
+
+                    user = new Models.User()
+                    {
+                        Name = "Sander",
+                        EmailAddress = "sander@nattevoetensensor.nl"
+                    };
+                    user.SetPassword("none");
+                    _context.Users.Add(user);
+
+                    user = new Models.User()
+                    {
+                        Name = "Jan",
+                        EmailAddress = "jan@nattevoetensensor.nl"
+                    };
+                    user.SetPassword("none");
+                    _context.Users.Add(user);
+
+                    user = new Models.User()
+                    {
+                        Name = "Ben",
+                        EmailAddress = "ben@nattevoetensensor.nl"
+                    };
+                    user.SetPassword("none");
+                    _context.Users.Add(user);
+
+                    user = new Models.User()
+                    {
+                        Name = "Ryan",
+                        EmailAddress = "ryan@nattevoetensensor.nl"
+                    };
+                    user.SetPassword("none");
+                    _context.Users.Add(user);
+
+                    await _context.SaveChangesAsync();
+                }
+
+
+            }
+
+            return Ok("DataBase Migrated!");
+
+        }
+
     }
 }

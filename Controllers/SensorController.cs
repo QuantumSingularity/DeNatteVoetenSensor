@@ -7,13 +7,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SensHagen.Models;
+using Nvs.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 
-namespace SensHagen.Controllers
+namespace Nvs.Controllers
 {
  	/*
         http://rpi3a.bem.dmz:8443/api/Sensor/Register?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22}
@@ -35,12 +35,12 @@ namespace SensHagen.Controllers
     {
 
 
-        private readonly SensHagen.Models.DataBaseContext _context;
+        private readonly Nvs.Models.Postgresql.DataBaseContext _context;
         private readonly ILogger<SensorController> _logger;
 
         private readonly string _logFile = "";
 
-        public SensorController (SensHagen.Models.DataBaseContext context, ILogger<SensorController> logger)
+        public SensorController (Nvs.Models.Postgresql.DataBaseContext context, ILogger<SensorController> logger)
         {
             _context = context;
             _logger = logger;
@@ -335,9 +335,10 @@ namespace SensHagen.Controllers
 
             //List<Models.Sensor> sensors;
 
-            SensHagen.Controllers.ghome myghome = new ghome();
+            Nvs.Controllers.ghome myghome = new ghome();
             myghome.Users = await _context.Users.OrderBy(q => q.Name).ToListAsync();
-            myghome.Sensors = await _context.Sensors.Include(s => s.LogItems).OrderBy(q => q.RegisterDate).ToListAsync();
+            //myghome.Sensors = await _context.Sensors.Include(s => s.LogItems).OrderBy(q => q.RegisterDate).ToListAsync();
+            myghome.Sensors = await _context.Sensors.OrderBy(q => q.RegisterDate).ToListAsync();
 
             this.OnLog("API","/api/GetSensorData");
 
@@ -358,7 +359,8 @@ namespace SensHagen.Controllers
 
             List<Models.SensorData> sensorsData = new List<Models.SensorData>();
 
-            List<Models.Sensor> sensors = await _context.Sensors.Include(s => s.LogItems).OrderBy(q => q.RegisterDate).ToListAsync();
+            List<Models.Sensor> sensors = await _context.Sensors.OrderBy(q => q.RegisterDate).ToListAsync();
+            //List<Models.Sensor> sensors = await _context.Sensors.OrderBy(q => q.RegisterDate).ToListAsync();
 
             foreach (Models.Sensor sensor in sensors)
             {
@@ -381,6 +383,8 @@ namespace SensHagen.Controllers
 
                 sensorData.Location = new Models.SensorData_Location() {Lan=52.539717, Lon=6.050211};
 
+                /*
+                List<Models.SensorLogItem> logItems = _context.SensorLogItems.Where(q => q.SensorId == sensor.SensorId).OrderByDescending(q => q.TimeStamp).Take(10).ToList();
 
                 List<Models.SensorLogItem> logItemsOn = sensor.LogItems.Where(q => q.LogType == SensorLogItemType.DetectionOn).OrderByDescending(q => q.TimeStamp).Take(3).ToList();
 
@@ -393,7 +397,7 @@ namespace SensHagen.Controllers
 
                     try
                     {
-                        List<Models.SensorLogItem> logItemsOff = sensor.LogItems.Where(q => q.LogType == SensorLogItemType.DetectionOff && q.TimeStamp >= logItem.TimeStamp).OrderBy(q => q.TimeStamp).Take(1).ToList();
+                        List<Models.SensorLogItem> logItemsOff = logItems.Where(q => q.LogType == SensorLogItemType.DetectionOff && q.TimeStamp >= logItem.TimeStamp).OrderBy(q => q.TimeStamp).Take(1).ToList();
                         if (logItemsOff.Count > 0)
                         {
                         history.end = logItemsOff[0].TimeStamp.ToUniversalTime();
@@ -408,7 +412,6 @@ namespace SensHagen.Controllers
                     sensorData.History.Add(history);
                 }
 
-                sensorsData.Add(sensorData);
 
                 if (sensorData.History.Count > 0)
                 {
@@ -416,6 +419,16 @@ namespace SensHagen.Controllers
                     sensorData.start = sensorData.History[0].start;
                     sensorData.end = sensorData.History[0].end;
                 }
+                */
+
+                //List<Models.SensorLogItem> logItems = _context.SensorLogItems.Where(q => q.SensorId == sensor.SensorId).OrderByDescending(q => q.TimeStamp).Take(10).ToList();
+
+                //List<Models.SensorLogItem> logItemsOn = _context.SensorLogItems.Where(q => q.SensorId == sensor.SensorId && q.LogType == SensorLogItemType.DetectionOn).OrderByDescending(q => q.TimeStamp).Take(1).ToList();
+                //List<Models.SensorLogItem> logItemsOff = _context.SensorLogItems.Where(q => q.SensorId == sensor.SensorId && q.LogType == SensorLogItemType.DetectionOff).OrderByDescending(q => q.TimeStamp).Take(1).ToList();
+
+                sensorData.start = sensorData.LastUpdate;
+
+                sensorsData.Add(sensorData);
 
             }
 

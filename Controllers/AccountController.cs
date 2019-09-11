@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 
-namespace SensHagen.Controllers
+namespace Nvs.Controllers
 {
 
     [Route("[controller]/[action]")]
@@ -32,7 +32,7 @@ namespace SensHagen.Controllers
         }
     
         [HttpPost]
-        public async Task<IActionResult> Login(SensHagen.Models.LoginViewModels.LoginModel loginModel)
+        public async Task<IActionResult> Login(Nvs.Models.LoginViewModels.LoginModel loginModel)
         {
             
 
@@ -151,7 +151,7 @@ namespace SensHagen.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(SensHagen.Models.LoginViewModels.LoginModel loginModel)
+        public async Task<IActionResult> Register(Nvs.Models.LoginViewModels.LoginModel loginModel)
         {
 
             return Redirect("/Account/Login");

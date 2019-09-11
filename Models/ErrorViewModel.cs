@@ -1,6 +1,6 @@
 using System;
 
-namespace SensHagen.Models
+namespace Nvs.Models
 {
     public class ErrorViewModel
     {

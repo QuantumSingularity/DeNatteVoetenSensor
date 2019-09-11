@@ -3,20 +3,20 @@ For me: [The Syntax](https://help.github.com/articles/basic-writing-and-formatti
 
 # Publish to RaspberryPi 
 It's an ARM device, so it has to be build here and deployed manually. <br />
-There's no runtime for the ARM, but it will be complited to an executable. Use `chmod +x SensHagen` on the Pi.
+There's no runtime for the ARM, but it will be complited to an executable. Use `chmod +x Nvs` on the Pi.
 
 **Build** <br />
 dotnet publish -c Release -r linux-arm
 
 **Copy to RPi** <br />
-scp -r /home/bem/Projects/SensHagen/bin/Release/netcoreapp2.2/linux-arm/publish/* dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/ 
+scp -r /home/bem/Projects/Nvs/bin/Release/netcoreapp2.2/linux-arm/publish/* dotnet@rpi3a.bem.dmz:/home/dotnet/Nvs/ 
 <br /> 
-scp -r /home/bem/Projects/SensHagen/Data/ dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/
+scp -r /home/bem/Projects/Nvs/Data/ dotnet@rpi3a.bem.dmz:/home/dotnet/Nvs/
 <br /> 
-scp -r /home/bem/Projects/SensHagen/bin/Release/netcoreapp2.2/linux-arm/publish/Sens* dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/
+scp -r /home/bem/Projects/Nvs/bin/Release/netcoreapp2.2/linux-arm/publish/Sens* dotnet@rpi3a.bem.dmz:/home/dotnet/Nvs/
 
 **Only changed Assemblies:** <br />
-scp -r /home/bem/Projects/SensHagen/bin/Release/netcoreapp2.2/linux-arm/publish/Sens* dotnet@rpi3a.bem.dmz:/home/dotnet/SensHagen/
+scp -r /home/bem/Projects/Nvs/bin/Release/netcoreapp2.2/linux-arm/publish/Sens* dotnet@rpi3a.bem.dmz:/home/dotnet/Nvs/
 
 # Initialize or update schema on Sqlite DataBase
 **Create database:** *to scaffold a migration and create the initial set of tables for the model.* 
