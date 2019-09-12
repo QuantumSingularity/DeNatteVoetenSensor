@@ -32,6 +32,7 @@ namespace Nvs.Models
             DetectionStatus = "-";
         }
 
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SensorId { get; set; }
 
         // Unique / AlternateKey
@@ -67,6 +68,7 @@ namespace Nvs.Models
             this.TimeStamp = DateTime.Now;
         }
 
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SensorLogItemId { get; set; }
         public int SensorId { get; set; }
 
@@ -93,7 +95,7 @@ namespace Nvs.Models
 
         }
 
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
         public string UniqueIdentifier {get;set;}
 
@@ -171,6 +173,7 @@ namespace Nvs.Models
             this.TimeStamp = DateTime.Now;
         }
 
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserLogItemId { get; set; }
         public int UserId { get; set; }
 

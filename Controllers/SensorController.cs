@@ -83,91 +83,102 @@ namespace Nvs.Controllers
 
             bool isOk = false;
             string errorMessage = "";
-            T registerData = RegisterData.GetInstance<T>(data);
 
-            if (registerData.IsValid)
+            try
             {
 
-                // all ok? 
-                //   save to database
+                T registerData = RegisterData.GetInstance<T>(data);
 
-                Models.User user = default(Models.User);
-                Models.Sensor sensor = default(Models.Sensor);
-
-                sensor = _context.Sensors
-                    .Include(q => q.User)
-                    .FirstOrDefault(q => q.MacAddress == registerData.MacAddress)
-                ;
-
-                user = _context.Users
-                    .FirstOrDefault(q => q.EmailAddress == registerData.EmailAddress)
-                ;
-
-                if (sensor == null && user != null)
-                {
-                    sensor = new Sensor();
-                    sensor.MacAddress = registerData.MacAddress;
-                    sensor.Name = registerData.SensorName;
-
-                    user.Sensors.Add(sensor);
-
-                    await _context.SaveChangesAsync();
-
-                    isOk = true;
-                }
-
-                if (!isOk && sensor != null && user != null)
+                if (registerData.IsValid)
                 {
 
-                    sensor.Name = registerData.SensorName;
-                    sensor.ReRegisterDate = DateTime.Now;
+                    // all ok? 
+                    //   save to database
 
-                    // What to do if the user is changed ?
-                    // Move sensor to new user.
+                    Models.User user = default(Models.User);
+                    Models.Sensor sensor = default(Models.Sensor);
 
-                    Models.User userOld = sensor.User;
-                    if (userOld != null && user.UserId != userOld.UserId)
+                    sensor = _context.Sensors
+                        .Include(q => q.User)
+                        .FirstOrDefault(q => q.MacAddress == registerData.MacAddress)
+                    ;
+
+                    user = _context.Users
+                        .FirstOrDefault(q => q.EmailAddress == registerData.EmailAddress)
+                    ;
+
+                    if (sensor == null && user != null)
                     {
-                        userOld.Sensors.Remove(sensor);
+                        sensor = new Sensor();
+                        sensor.MacAddress = registerData.MacAddress;
+                        sensor.Name = registerData.SensorName;
+
                         user.Sensors.Add(sensor);
+
+                        await _context.SaveChangesAsync();
+
+                        isOk = true;
                     }
 
-                    await _context.SaveChangesAsync();
-
-                    isOk = true;
-                }
-
-                if (!isOk)
-                {
-
-                    if (user == null)
+                    if (!isOk && sensor != null && user != null)
                     {
-                        errorMessage = "Invalid User. This EmailAddress is not registered.";
+
+                        sensor.Name = registerData.SensorName;
+                        sensor.ReRegisterDate = DateTime.Now;
+
+                        // What to do if the user is changed ?
+                        // Move sensor to new user.
+
+                        Models.User userOld = sensor.User;
+                        if (userOld != null && user.UserId != userOld.UserId)
+                        {
+                            userOld.Sensors.Remove(sensor);
+                            user.Sensors.Add(sensor);
+                        }
+
+                        await _context.SaveChangesAsync();
+
+                        isOk = true;
                     }
 
+                    if (!isOk)
+                    {
+
+                        if (user == null)
+                        {
+                            errorMessage = "Invalid User. This EmailAddress is not registered.";
+                        }
+
+                        // Log error
+                        // Log Error to database.
+                    }
+                        
+                }
+                else
+                {
+                    errorMessage = registerData.ErrorMessage;
                     // Log error
                     // Log Error to database.
                 }
-                    
-            }
-            else
-            {
-                errorMessage = registerData.ErrorMessage;
-                // Log error
-                // Log Error to database.
-            }
 
 
-            if (isOk)
-            {
-                return Ok("Registration Succeeded.");
+                if (isOk)
+                {
+                    return Ok("Registration Succeeded.");
+                }
+                else
+                {
+                    this.OnLog("Register",errorMessage);
+                    return StatusCode(400, $"{errorMessage}\n{data}");
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                this.OnLog("Register",errorMessage);
-                return StatusCode(400, $"{errorMessage}\n{data}");
+                this.OnLog("Register",errorMessage, ex);
+                return StatusCode(400, $"An Exception has Occurred.\n{data}");
             }
-            
+
         }
 
 #endregion
@@ -203,96 +214,114 @@ namespace Nvs.Controllers
 
             bool isOk = false;
             string errorMessage = "";
-            T eventData = EventData.GetInstance<T>(data);
 
-            if (eventData.IsValid)
+
+            try
             {
-                // check input
 
-                // all ok? 
-                //   save to database
+                T eventData = EventData.GetInstance<T>(data);
 
-                Models.Sensor sensor = default(Models.Sensor);
-
-                sensor = _context.Sensors
-                    .FirstOrDefault(q => q.MacAddress == eventData.MacAddress)
-                ;
-
-                if (sensor != null)
+                if (eventData.IsValid)
                 {
+                    // check input
 
-                    SensorLogItem sensorLogItem = new SensorLogItem();
-                    sensorLogItem.LogType = eventData.LogItemType;
+                    // all ok? 
+                    //   save to database
 
-                    if (eventData?.BatteryVoltage > 0.0)
+                    Models.Sensor sensor = default(Models.Sensor);
+
+                    sensor = _context.Sensors
+                        .FirstOrDefault(q => q.MacAddress == eventData.MacAddress)
+                    ;
+
+                    if (sensor != null)
                     {
-                        sensorLogItem.BatteryVoltage = eventData.BatteryVoltage;
+
+                        SensorLogItem sensorLogItem = new SensorLogItem();
+                        sensorLogItem.LogType = eventData.LogItemType;
+
+                        if (eventData?.BatteryVoltage > 0.0)
+                        {
+                            sensorLogItem.BatteryVoltage = eventData.BatteryVoltage;
+                        }
+
+                        sensor.LogItems.Add(sensorLogItem);
+
+                        switch (eventData.LogItemType)
+                        {
+                            case SensorLogItemType.Heartbeat:
+                                sensor.HeartBeatDate = DateTime.Now;
+                                break;
+
+                            case SensorLogItemType.DetectionOn:
+                                sensor.LastDetectionOnDate = DateTime.Now;
+                                sensor.DetectionStatusDate = DateTime.Now;
+                                sensor.DetectionStatus = "on";
+                                break;
+
+                            case SensorLogItemType.DetectionOff:
+                                sensor.LastDetectionOffDate = DateTime.Now;
+                                sensor.DetectionStatusDate = DateTime.Now;
+                                sensor.DetectionStatus = "off";
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        if (eventData.BatteryVoltage != null && eventData.BatteryVoltage > 0.5)
+                        {
+                            sensor.BatteryVoltage = eventData.BatteryVoltage;
+                            sensor.BatteryVoltageDate = DateTime.Now;
+                        }
+
+                        await _context.SaveChangesAsync();
+
+                        isOk = true;
                     }
-
-                    sensor.LogItems.Add(sensorLogItem);
-
-                    switch (eventData.LogItemType)
+                    else
                     {
-                        case SensorLogItemType.Heartbeat:
-                            sensor.HeartBeatDate = DateTime.Now;
-                            break;
-
-                        case SensorLogItemType.DetectionOn:
-                            sensor.LastDetectionOnDate = DateTime.Now;
-                            sensor.DetectionStatusDate = DateTime.Now;
-                            sensor.DetectionStatus = "on";
-                            break;
-
-                        case SensorLogItemType.DetectionOff:
-                            sensor.LastDetectionOffDate = DateTime.Now;
-                            sensor.DetectionStatusDate = DateTime.Now;
-                            sensor.DetectionStatus = "off";
-                            break;
-
-                        default:
-                            break;
+                        errorMessage = "Invalid Sensor. This MacAddress is not registered.";
+                        // Log error
+                        // Log Error to database.
                     }
+                    
 
-                    if (eventData.BatteryVoltage != null && eventData.BatteryVoltage > 0.5)
-                    {
-                        sensor.BatteryVoltage = eventData.BatteryVoltage;
-                        sensor.BatteryVoltageDate = DateTime.Now;
-                    }
-
-                    await _context.SaveChangesAsync();
-
-                    isOk = true;
                 }
                 else
                 {
-                    errorMessage = "Invalid Sensor. This MacAddress is not registered.";
+                    errorMessage = eventData.ErrorMessage;
                     // Log error
                     // Log Error to database.
                 }
-                
-
-            }
-            else
-            {
-                errorMessage = eventData.ErrorMessage;
-                // Log error
-                // Log Error to database.
-            }
 
 
-            if (isOk)
-            {
-                return Ok("Event Processed.");
+                if (isOk)
+                {
+                    return Ok("Event Processed.");
+                }
+                else
+                {
+                    this.OnLog("Event",errorMessage);
+                    return StatusCode(400, $"{errorMessage}\n{data}");
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                this.OnLog("Event",errorMessage);
-                return StatusCode(400, $"{errorMessage}\n{data}");
+                this.OnLog("Event",errorMessage, ex);
+                return StatusCode(400, $"An Exception has Occurred.\n{data}");
             }
+
 
         }
 
         private void OnLog(string method, string value)
+        {
+            OnLog(method, value, null);
+        }
+
+        private void OnLog(string method, string value, Exception exception)
         {
             try
             {
@@ -313,8 +342,19 @@ namespace Nvs.Controllers
                 {
                     host = "Unknown";
                 }
-
-                System.IO.File.AppendAllText($"{_logFile}{host}.{DateTime.Now.ToString("yyyy-MM-dd")}.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} [{host}] {method}: [{remoteIp}] {value}\n");
+                if (exception == null)
+                {
+                    System.IO.File.AppendAllText($"{_logFile}{host}.{DateTime.Now.ToString("yyyy-MM-dd")}.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} [{host}] {method}: [{remoteIp}] {value}\n");
+                }
+                else
+                {
+                    string message = $"{exception.Message}\r\n{exception.StackTrace}";
+                    if (exception.InnerException != null)
+                    {
+                        message += $"{exception.InnerException.Message}\r\n{exception.InnerException.StackTrace}";
+                    }
+                    System.IO.File.AppendAllText($"{_logFile}{host}.{DateTime.Now.ToString("yyyy-MM-dd")}.Exception.log",$"{DateTime.Now.ToString("yyyy-MM-dd.HH:mm:ss")} [{host}] {method}: [{remoteIp}] {value}\n{message}\n");
+                }
             }
             catch (Exception ex)
             {
