@@ -50,6 +50,8 @@ namespace Nvs
             services.AddDbContext<Nvs.Models.SqLite.DataBaseContext>(options => options.UseSqlite(Configuration["Data:NvsSqLiteDb:DataSource"]));
             services.AddDbContext<Nvs.Models.Postgresql.DataBaseContext>(options => options.UseNpgsql(Configuration["Data:NvsPostgresqlDb:DataSource"]));
 
+            services.AddScoped<Library.IUserRepository, Library.UserRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

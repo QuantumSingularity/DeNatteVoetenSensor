@@ -22,11 +22,13 @@ namespace Nvs.Controllers
 
         private readonly Nvs.Models.Postgresql.DataBaseContext _context;
         private readonly Nvs.Models.SqLite.DataBaseContext _oldcontext;
+        private readonly Library.IUserRepository _userRepository;
 
-        public HomeController (Nvs.Models.Postgresql.DataBaseContext context, Nvs.Models.SqLite.DataBaseContext oldcontext)
+        public HomeController (Nvs.Models.Postgresql.DataBaseContext context, Nvs.Models.SqLite.DataBaseContext oldcontext, Library.IUserRepository userRepository)
         {
             _context = context;
             _oldcontext = oldcontext;
+            _userRepository = userRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -151,6 +153,11 @@ namespace Nvs.Controllers
             }
 
             ViewBag.RemoteIp = remoteIp;
+
+            ViewBag.User = User.Identity;
+
+            ViewBag.UserII = _userRepository.CurrentUser;
+
             
             return View();
         }
