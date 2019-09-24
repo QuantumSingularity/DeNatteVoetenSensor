@@ -421,7 +421,13 @@ namespace Nvs.Controllers
                     }
                 }
 
-                sensorData.Location = new Models.SensorData_Location() {Lan=52.539717, Lon=6.050211};
+                sensorData.Location = new Models.SensorData_Location();
+
+                if (sensor.LocationLatitude != null && sensor.LocationLongitude != null)
+                {
+                    sensorData.Location.Lat = (Double)sensor.LocationLatitude;
+                    sensorData.Location.Lon = (Double)sensor.LocationLongitude;
+                }
 
                 /*
                 List<Models.SensorLogItem> logItems = _context.SensorLogItems.Where(q => q.SensorId == sensor.SensorId).OrderByDescending(q => q.TimeStamp).Take(10).ToList();

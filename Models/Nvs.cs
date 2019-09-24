@@ -57,6 +57,10 @@ namespace Nvs.Models
 
         public DateTime? BatteryVoltageDate {get; set; }
         public double? BatteryVoltage { get; set; }
+
+        public Double? LocationLatitude { get; set; }
+        public Double? LocationLongitude { get; set; }
+
     }
 
 
@@ -188,7 +192,7 @@ namespace Nvs.Models
     #region Anton API
     public class SensorData_Location
     {
-        public double Lan { get; set; }
+        public double Lat { get; set; }
         public double Lon { get; set; }
     }
 
