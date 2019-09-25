@@ -1,20 +1,37 @@
 ﻿@inject Microsoft.Extensions.Configuration.IConfiguration _configuration
 @model Nvs.Controllers.ghome
 
-    @foreach (var sensor in Model.Sensors)
-    {
         <table class="table table-striped table-hover">
             <thead>
-                <tr><th colspan="2">@sensor.MacAddress - @sensor.User.Name `@sensor.Name`</th><th style="text-align:right;">@DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")</th></tr>
+                <tr><th colspan="6">@DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")</th></tr>
             </thead>
             <tbody>
-                <tr><td>Registered</td><td></td><td>@sensor.RegisterDate.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>HeartBeat</td><td></td><td>@sensor.HeartBeatDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>Battery</td><td>@sensor.BatteryVoltage?.ToString("F2")</td><td>@sensor.BatteryVoltageDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>DetectionStatus</td><td>@sensor.DetectionStatus</td><td>@sensor.DetectionStatusDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>LastDetectionOn</td><td></td><td>@sensor.LastDetectionOnDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>LastDetectionOff</td><td></td><td>@sensor.LastDetectionOffDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
+                <tr>
+                    <td style="color: blue; font-weight: bold;">Registered</td>
+                    <td style="color: blue; font-weight: bold;">HeartBeat</td>
+                    <td style="color: blue; font-weight: bold;">Battery</td>
+                    <td style="color: blue; font-weight: bold;">DetectionStatus</td>
+                    <td style="color: blue; font-weight: bold;">LastDetectionOn</td>
+                    <td style="color: blue; font-weight: bold;">LastDetectionOff</td>
+                </tr>
+
+    @foreach (var sensor in Model.Sensors)
+    {
+        <tr>
+            <td colspan="6" style="color: green; font-weight: bold;">@($"{sensor.MacAddress} --> {sensor.User.Name} `{sensor.Name}`")</td>
+        </tr>
+
+        <tr>
+            <td>@sensor.RegisterDate.ToString("dd-MM-yyyy HH:mm:ss")</td>
+            <td>@sensor.HeartBeatDate?.ToString("dd-MM-yyyy HH:mm:ss")</td>
+            <td>@($"{sensor.BatteryVoltage?.ToString("F2")} {sensor.BatteryVoltageDate?.ToString("dd-MM-yyyy HH:mm:ss")}")</td>
+            <td>@($"{sensor.DetectionStatus} {sensor.DetectionStatusDate?.ToString("dd-MM-yyyy HH:mm:ss")}")</td>
+            <td>@sensor.LastDetectionOnDate?.ToString("dd-MM-yyyy HH:mm:ss")</td>
+            <td>@sensor.LastDetectionOffDate?.ToString("dd-MM-yyyy HH:mm:ss")</td>
+        </tr>
+    }
+
             </tbody>
         </table>
-    }
+
     
