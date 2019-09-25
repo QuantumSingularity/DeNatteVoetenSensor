@@ -12,26 +12,6 @@
 
 </div>
 
-@{
-    /*
-    @foreach (var sensor in Model.Sensors)
-    {
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr><th colspan="3">@sensor.MacAddress - @sensor.User.Name `@sensor.Name`</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>Registered</td><td></td><td>@sensor.RegisterDate.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>HeartBeat</td><td></td><td>@sensor.HeartBeatDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>Battery</td><td>@sensor.BatteryVoltage?.ToString("F2")</td><td>@sensor.BatteryVoltageDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>DetectionStatus</td><td>@sensor.DetectionStatus</td><td>@sensor.DetectionStatusDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>LastDetectionOn</td><td></td><td>@sensor.LastDetectionOnDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-                <tr><td>LastDetectionOff</td><td></td><td>@sensor.LastDetectionOffDate?.ToString("dd-MM-yyyy HH:mm:ss")</td></tr>
-            </tbody>
-        </table>
-    }
-    */
-}
 <div class="row flex-xl-nowrap">
 
     <div class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 main">
@@ -56,16 +36,9 @@
 
     function LoadQuery() {
 
-               
         $("#viewPlaceHolder").load("/api/GetSensorData");
 
-/*
-        $("#viewPlaceHolder").load("/api/GetSensorData",
-            {
-            }, function () { });
-*/
-
-        CountBack(5);
+        CountBack(30);
 
     };
 

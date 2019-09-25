@@ -1,3 +1,5 @@
+/*
+
 -- Table: public."Users"
 
 -- DROP TABLE public."Users";
@@ -26,22 +28,37 @@ ALTER TABLE public."Users"
 
 -- Table: public."UserLogItems"
 
--- DROP TABLE public."UserLogItems";
+
+DROP TABLE public."UserLogItems";
+
+DROP SEQUENCE public."UserLogItems_UserLogItemId_seq";
+
+CREATE SEQUENCE public."UserLogItems_UserLogItemId_seq"
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 2000000000
+  START 1
+  CACHE 1;
+
+ALTER TABLE public."UserLogItems_UserLogItemId_seq" OWNER TO nvs;
 
 CREATE TABLE public."UserLogItems"
 (
   "UserLogItemId" integer NOT NULL DEFAULT nextval('"UserLogItems_UserLogItemId_seq"'::regclass),
   "UserId" integer NOT NULL,
   "TimeStamp" timestamp without time zone NOT NULL,
-  "LogItemType" text,
-  "Value" text,
+
+  "LogType" text,
+  "LogCategory" text,
+  "Method" text,
+  "Parameters" text,
+  "Message" text,
+
   CONSTRAINT "PK_UserLogItems" PRIMARY KEY ("UserLogItemId")
 )
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public."UserLogItems"
-  OWNER TO nvs;
+WITH (OIDS=FALSE);
+
+ALTER TABLE public."UserLogItems" OWNER TO nvs;
 
 -- Index: public."IX_UserLogItems_UserId"
 
@@ -126,8 +143,8 @@ CREATE INDEX "IX_SensorLogItems_SensorId"
 
 
 
-/*
-  new fields 2019-09-24
+
+--  new fields 2019-09-24
 
 alter table public."Sensors"
   add column "LocationLatitude" double precision,

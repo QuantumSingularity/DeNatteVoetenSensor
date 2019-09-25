@@ -153,7 +153,7 @@ namespace Nvs.Models
             {
 
                 // Add Salt
-                input = $"@TeamNVS@-{this.UserId}-{input}-#TeamNVS#";
+                input = $"@TeamNVS@-{this.UniqueIdentifier}-{input}-#TeamNVS#";
 
                 // Send a sample text to hash.  
                 byte[] hashedBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
@@ -182,8 +182,13 @@ namespace Nvs.Models
         public int UserId { get; set; }
 
         public DateTime TimeStamp { get; set; }
-        public string LogItemType { get; set; }
-        public string Value { get; set; }
+
+        public string LogType { get; set; }
+        public string LogCategory { get; set; }
+        public string Method { get; set; }
+        public string Parameters { get; set; }
+        public string Message { get; set; }
+
 
         public User User { get; set; }
     }    
@@ -194,6 +199,10 @@ namespace Nvs.Models
     {
         public double Lat { get; set; }
         public double Lon { get; set; }
+
+        // compatibility -- Deprecated
+        public double Lan { get; set; }
+
     }
 
     public class SensorData_History

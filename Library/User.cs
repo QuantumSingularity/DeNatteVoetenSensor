@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Nvs.Library
 {
+
     public class User 
     {
 
@@ -29,14 +30,27 @@ namespace Nvs.Library
             UserId = _httpContextAccessor.HttpContext.User.Identity.Name;
         }
 
+        public User(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, Nvs.Models.Postgresql.DataBaseContext context, ILogger<UserRepository> logger, Nvs.Models.User user)
+        {
+            _context = context;
+            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
+
+            this.UserName = user.Name;
+            this.UserId = user.EmailAddress;
+            this.IsDisabled = user.IsDisabled;
+
+        }
+
         public string UserName { get; set; }
         public string UserId { get; private set; }
-        public string EmailAddress { get; set; }
 
         public DateTime LoggedOnDate { get; set; } = DateTime.Now;
         public DateTime LastAccessedDate { get; set; } = DateTime.Now;
         public int NumberOfRequests { get; set; } = 0;
 
+        public bool IsDisabled { get; set; } = false;
 
     }
 

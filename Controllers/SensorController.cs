@@ -427,6 +427,9 @@ namespace Nvs.Controllers
                 {
                     sensorData.Location.Lat = (Double)sensor.LocationLatitude;
                     sensorData.Location.Lon = (Double)sensor.LocationLongitude;
+
+                    // compatibility -- Deprecated
+                    sensorData.Location.Lan = (Double)sensor.LocationLatitude;
                 }
 
                 /*

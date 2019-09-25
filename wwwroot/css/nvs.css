@@ -1347,6 +1347,9 @@ h1, h2 {
     border: 1px solid white;
 }
 
+h4 {
+    font-style: italic;
+}
 
 .footer {
     height: 50px;

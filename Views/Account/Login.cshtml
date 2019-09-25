@@ -32,6 +32,10 @@
                 @Html.LabelFor(m => m.RememberMe)
                 @Html.ValidationMessageFor(m => m.RememberMe)
             </div>
+
+            <input type="hidden" id="Name" name="Name" value="nvt" />
+            <input type="hidden" id="SecurityCode" name="SecurityCode" value="9999" />
+
             <div class="form-group">
                 <button type="submit" class="btn btn-default">Log in</button>
             </div>
@@ -39,6 +43,11 @@
         <form action="/account/register" method="get">
             <button type="submit" class="btn btn-default">Registreren</button>
         </form>
+
+        @if (!String.IsNullOrWhiteSpace(Model?.CreateResult))
+        {
+            <h4 class="text-danger">@Model.CreateResult</h4>
+        }
 
     </div>
 </div>
