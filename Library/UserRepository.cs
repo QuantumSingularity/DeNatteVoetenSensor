@@ -74,6 +74,15 @@ namespace Nvs.Library
                     Models.User user = _context.Users.FirstOrDefault( q => q.EmailAddress == emailAddress );
                     if (user != null)
                     {
+                        if (user.LastLogOnDate < DateTime.Now.AddHours(-1))
+                        {
+                            // ReLogon
+                            user.LastLogOnDate = DateTime.Now;
+                            _context.SaveChanges();
+
+                            OnLog(LogType.Default, LogCategory.LogOn, "LogOnUser","","Success. ReLoggedOn via Cookie.", user);
+
+                        }
                         return new User(_httpContextAccessor, _configuration, _context, _logger, user);
                     }
                     else
@@ -92,6 +101,10 @@ namespace Nvs.Library
             if (securityCode != 1234)
             {
                 result = "Ongeldige PIN Code.";
+
+                // Wait 2 seconds
+                await Task.Delay(2000);
+
             }
 
             Models.User user = await _context.Users.FirstOrDefaultAsync( q => q.EmailAddress == username );
@@ -100,6 +113,9 @@ namespace Nvs.Library
             {
                 result = "De gebruikersnaam bestaat al. Als je je wachtwoord bent vergeten kun je `wachtwoord vergeten` aanklikken op de `Inloggen pagina`.";
                 OnLog(LogType.Error, LogCategory.Register, "CreateUser","","Failure. User already exists.", user);
+
+                // Wait 1 second
+                await Task.Delay(1000);
             }
             else
             {
@@ -141,6 +157,11 @@ namespace Nvs.Library
 
             }
 
+            if (result != "OK")
+            {
+                // Wait 2 seconds
+                await Task.Delay(2000);
+            }
             return result;
         }
 
