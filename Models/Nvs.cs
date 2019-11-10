@@ -1,6 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -123,7 +124,7 @@ namespace Nvs.Models
         public DateTime? LastLogOnDate { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
-        public DateTime PasswordChangedDate { get; set; }
+        public DateTime? PasswordChangedDate { get; set; }
 
 
 
@@ -165,6 +166,27 @@ namespace Nvs.Models
 
             return result;
         }
+
+        private string GetRandomString(int length)
+        {
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            string s = "";
+            using (RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider())
+            {
+                while (s.Length != length)
+                {
+                    byte[] oneByte = new byte[1];
+                    provider.GetBytes(oneByte);
+                    char character = (char)oneByte[0];
+                    if (valid.Contains(character))
+                    {
+                        s += character;
+                    }
+                }
+            }
+            return s;
+        }
+
 
     }
 

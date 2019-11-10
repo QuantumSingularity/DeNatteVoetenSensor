@@ -260,5 +260,19 @@ namespace Nvs.Controllers
 
         }
 
+
+        public async Task<IActionResult> Test()
+        {
+            /*
+                server: server121.firstfind.nl
+                mail: noreply@nattevoetensensor.nl
+                user: nattevoetens02
+                pw: Th1sIsAL0ngP@ssW0rd4NoR3ply            
+
+            */
+            return Ok(await Library.Methods.SendEmailAsync("bas.bem@xs4all.nl", "Bas", "Test www", "Test vanuit de controller", "", false, "noreply@nattevoetensensor.nl","nvs"));
+        }
+
+
     }
 }

@@ -23,9 +23,9 @@ namespace Nvs.Controllers
         http://api.nattevoetensensor.nl:16384/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.2367}
         http://api.nattevoetensensor.nl:16384/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22}
 
-        http://localhost:8080/api/Sensor/Register?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22}
-        http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.67}
-        http://localhost:8080/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22}
+        http://localhost:32768/api/Sensor/Register?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EmailAddress%22%3A%22bas@nattevoetensensor.nl%22}
+        http://localhost:32768/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22%2C%22BatteryVoltage%22%3A3.67}
+        http://localhost:32768/api/Sensor/Event?data={%22MacAddress%22%3A%22b8:ae:ed:7c:9c:b1%22%2C%22EventType%22%3A%22heartbeat%22}
     */
 
 
@@ -107,6 +107,30 @@ namespace Nvs.Controllers
                         .FirstOrDefault(q => q.EmailAddress == registerData.EmailAddress)
                     ;
 
+                    if (user == null)
+                    {
+                        // Ohh ooh. New User and new sensor.
+
+                        user = new User();
+                        user.UniqueIdentifier = Guid.NewGuid().ToString();
+                        user.EmailAddress = registerData.EmailAddress;
+                        user.Name = "";
+                        user.IsDisabled = false;
+                        user.CreatedDate = DateTime.Now;
+                        user.LastModifiedDate = DateTime.Now;
+
+                        _context.Users.Add(user);
+
+                        await _context.SaveChangesAsync();
+
+                        //return Ok($"Registration Succeeded. Email is sent. {user.UserId}");
+
+                        string mailMessage = $"Account activeren: <a href=\"https://www.nattevoetensensor.nl/Activate?guid={user.UniqueIdentifier}\">REGISTREREN</a>";
+                        string mailResult = await Library.Methods.SendEmailAsync(user.EmailAddress, "Nieuwe NatteVoetenSensor Gebruiker", "Welkom en account activeren", "", mailMessage, true);
+
+                        //isOk = true;
+                    }
+
                     if (sensor == null && user != null)
                     {
                         sensor = new Sensor();
@@ -122,6 +146,13 @@ namespace Nvs.Controllers
 
                     if (!isOk && sensor != null && user != null)
                     {
+
+                        if (sensor.User != user)
+                        {
+                            // Owner changed
+                            sensor.User.Sensors.Remove(sensor);
+                            user.Sensors.Add(sensor);
+                        }
 
                         sensor.Name = registerData.SensorName;
                         sensor.ReRegisterDate = DateTime.Now;

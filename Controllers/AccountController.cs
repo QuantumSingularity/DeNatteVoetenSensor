@@ -33,7 +33,17 @@ namespace Nvs.Controllers
         {
             return View();
         }
-    
+
+
+        [HttpGet]
+        public IActionResult Activate(string guid)
+        {
+
+            ViewBag.Guid = guid;
+            return View();
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Login(Nvs.Models.LoginViewModels.LoginModel loginModel)
         {

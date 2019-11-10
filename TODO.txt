@@ -1,23 +1,36 @@
 ToDo/Vragen:
 
-- Sensoren aanmaken/definieren:
-  Doen wij dit of mogen de gebruikers dit doen?
+- Q: Sensoren aanmaken/definieren:
+     Doen wij dit of mogen de gebruikers dit doen?
+  A: De sensor wordt automatisch gecreeerd als de NVS zich voor de eerste keer aanmeldt.
 
-- Accounts aanmaken:
-  Alleen via invite?
-  --> Via code op de doos
+- Q: Account:
+     Hoe worden deze aangemaakt?
+  A: 
 
-- Status sensoren:
-  Mag iedereen alle statussen zien, alleen gebruikers alle statussen of gebruikers alleen hun eigen sensor?
-
-
-
-
+- Q: Status sensoren:
+     Mag iedereen alle statussen zien, alleen gebruikers alle statussen of gebruikers alleen hun eigen sensor?
+  A: 
 
 
+Dus de procedure:
+----------------
+Registratie van Sensor:
+ - check op bestaand account;
+   - Bestaat: dan koppelen
+   - Bestaat niet: nieuw 'pending' account aanmaken, sensor koppelen aan nieuw account (en evt ontkoppelen van ander account) en een activatie email sturen.
+Daily:
+ - batchjob die oude pending accounts zonder sensorkoppeling opruimt.
 
 
-# Create new project ( https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new?tabs=netcore21 )
+
+
+
+
+
+
+
+# Create new project ( https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-new?tabs=netcore22 )
 dotnet new mvc --auth None
 
 https://github.com/aspnet/Docs/blob/master/aspnetcore/security/authentication/cookie/samples/2.x/CookieSample/
