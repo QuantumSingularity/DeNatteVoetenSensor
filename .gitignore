@@ -1,5 +1,5 @@
 /DeNatteVoetenSensor.Api/obj
-/DeNatteVoetenSensor.App/bin/Debug/net6.0
+/DeNatteVoetenSensor.App/bin/*
 /DeNatteVoetenSensor.Models/obj
 /DeNatteVoetenSensor.App/obj
 /DeNatteVoetenSensor.App/Properties/*.user
