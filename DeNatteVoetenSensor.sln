@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeNatteVoetenSensor.Api", "DeNatteVoetenSensor.Api\DeNatteVoetenSensor.Api.csproj", "{88534A07-40E9-4032-B9EF-5AEEECF2CBE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeNatteVoetenSensor.Models", "DeNatteVoetenSensor.Models\DeNatteVoetenSensor.Models.csproj", "{1AD78A2D-D101-40D9-91F2-C2164D6AC358}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeNatteVoetenSensor.App", "DeNatteVoetenSensor.App\DeNatteVoetenSensor.App.csproj", "{1D5DCFC8-6874-4A56-9893-35F4FE4FF0C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88534A07-40E9-4032-B9EF-5AEEECF2CBE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88534A07-40E9-4032-B9EF-5AEEECF2CBE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88534A07-40E9-4032-B9EF-5AEEECF2CBE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88534A07-40E9-4032-B9EF-5AEEECF2CBE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AD78A2D-D101-40D9-91F2-C2164D6AC358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD78A2D-D101-40D9-91F2-C2164D6AC358}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD78A2D-D101-40D9-91F2-C2164D6AC358}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD78A2D-D101-40D9-91F2-C2164D6AC358}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D5DCFC8-6874-4A56-9893-35F4FE4FF0C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D5DCFC8-6874-4A56-9893-35F4FE4FF0C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D5DCFC8-6874-4A56-9893-35F4FE4FF0C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D5DCFC8-6874-4A56-9893-35F4FE4FF0C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BDA6F99D-16B7-40DD-8B03-7580DB413AE0}
+	EndGlobalSection
+EndGlobal
